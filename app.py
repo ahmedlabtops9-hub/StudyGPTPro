@@ -2,6 +2,7 @@ import json
 import os
 import streamlit as st
 import requests
+import time
 
 st.set_page_config(page_title="StudyGPT Pro", page_icon="🎓", layout="wide")
 
@@ -53,17 +54,40 @@ def gemini(contents, system_instruction, json_mode=False):
         "contents": contents,
         "generationConfig": config,
     }
-    response = requests.post(
-        ENDPOINT,
-        headers={"x-goog-api-key": key, "Content-Type": "application/json"},
-        json=payload,
-        timeout=75,
-    )
+    headers = {"x-goog-api-key": key, "Content-Type": "application/json"}
+    response = None
+    for attempt in range(3):
+        try:
+            response = requests.post(
+                ENDPOINT,
+                headers=headers,
+                json=payload,
+                timeout=75,
+            )
+        except requests.RequestException as error:
+            if attempt < 2:
+                time.sleep(2 ** attempt * 2)
+                continue
+            raise RuntimeError("تعذر الاتصال بخدمة Gemini بعد 3 محاولات. تحقق من الاتصال وحاول لاحقًا.") from error
+
+        if response.status_code == 503 and attempt < 2:
+            time.sleep(2 ** attempt * 3)
+            continue
+        break
+
+    if response is None:
+        raise RuntimeError("تعذر الوصول إلى خدمة Gemini. حاول مرة أخرى لاحقًا.")
+
     if response.status_code != 200:
         try:
             message = response.json().get("error", {}).get("message", response.text)
         except ValueError:
             message = response.text
+        if response.status_code == 503:
+            raise RuntimeError(
+                "خدمة Gemini عليها ضغط مرتفع حاليًا. حاولنا تلقائيًا 3 مرات ولم تتوفر الخدمة. "
+                "المشكلة من جهة خوادم Gemini وليست من إجابتك. انتظر قليلًا ثم أعد المحاولة."
+            )
         raise RuntimeError(f"Gemini API ({response.status_code}): {message}")
     data = response.json()
     candidates = data.get("candidates", [])
