@@ -332,54 +332,77 @@ def gemini(contents, system_instruction, json_mode=False):
     }
     headers = {"x-goog-api-key": key, "Content-Type": "application/json"}
 
-    # Start with the low-latency model; use the stronger Flash model only as fallback.
-    model_candidates = ["gemini-3.8-flash"]
-    last_error = None
+    # Primary model followed by independent Flash fallbacks.
+    model_candidates = [
+        "gemini-3.8-flash",
+        "gemini-3.5-flash-lite",
+        "gemini-3.7-flash",
+        "gemini-3.5-flash",
+    ]
+    failures = []
 
-    for model_name in model_candidates:
-        endpoint = f"https://generativelanguage.googleapis.com/v1beta/models/{model_name}:generateContent"
-        try:
-            response = requests.post(
-                endpoint,
-                headers=headers,
-                json=payload,
-                timeout=20,
+    for model_index, model_name in enumerate(model_candidates):
+        endpoint = (
+            f"https://generativelanguage.googleapis.com/v1beta/"
+            f"models/{model_name}:generateContent"
+        )
+        # One quick retry for temporary server overload, then switch models.
+        attempts = 2 if model_index == 0 else 1
+
+        for attempt in range(attempts):
+            try:
+                response = requests.post(
+                    endpoint,
+                    headers=headers,
+                    json=payload,
+                    timeout=(8, 35),
+                )
+            except requests.RequestException as error:
+                failures.append(f"{model_name}: network error ({type(error).__name__})")
+                break
+
+            if response.status_code == 200:
+                data = response.json()
+                candidates = data.get("candidates", [])
+                if not candidates:
+                    raise RuntimeError("وصل رد فارغ من Gemini. جرّب صياغة السؤال مرة أخرى.")
+                parts = candidates[0].get("content", {}).get("parts", [])
+                answer = "\n".join(
+                    part.get("text", "") for part in parts if part.get("text")
+                )
+                if not answer.strip():
+                    raise RuntimeError("النموذج لم يُرجع نصًا. جرّب سؤالًا أوضح.")
+                return answer.strip()
+
+            try:
+                error_data = response.json().get("error", {})
+                message = error_data.get("message", response.text[:250])
+                status_name = error_data.get("status", "")
+            except ValueError:
+                message = response.text[:250]
+                status_name = ""
+
+            status = response.status_code
+            failures.append(
+                f"{model_name}: HTTP {status} {status_name} {message[:180]}"
             )
-        except requests.RequestException as error:
-            last_error = error
-            continue
 
-        if response.status_code == 200:
-            data = response.json()
-            candidates = data.get("candidates", [])
-            if not candidates:
-                raise RuntimeError("وصل رد فارغ من Gemini. جرّب صياغة السؤال مرة أخرى.")
-            parts = candidates[0].get("content", {}).get("parts", [])
-            answer = "\n".join(part.get("text", "") for part in parts if part.get("text"))
-            if not answer.strip():
-                raise RuntimeError("النموذج لم يُرجع نصًا. جرّب سؤالًا أوضح.")
-            return answer.strip()
+            # Quota/overload/model availability: try the next model automatically.
+            if status in (408, 429, 500, 502, 503, 504, 404):
+                if status == 503 and attempt == 0:
+                    time.sleep(0.8)
+                    continue
+                break
 
-        last_error = response
-        # Move to the fallback immediately on temporary overload; do not wait through
-        # multiple long retries that make the student wait.
-        if response.status_code in (429, 500, 502, 503, 504):
-            continue
+            # Authentication, permission, or malformed request errors will not
+            # be fixed by switching models, so report them clearly.
+            raise RuntimeError(f"Gemini API ({status}): {message}")
 
-        try:
-            message = response.json().get("error", {}).get("message", response.text)
-        except ValueError:
-            message = response.text
-        raise RuntimeError(f"Gemini API ({response.status_code}): {message}")
-
-    if isinstance(last_error, requests.Response):
-        if last_error.status_code in (429, 500, 502, 503, 504):
-            raise RuntimeError(
-                "خدمة Gemini مشغولة حاليًا. جرّب بعد دقيقة؛ قلّلنا وقت الانتظار لكن توفر الخدمة خارج تحكم التطبيق."
-            )
-        raise RuntimeError(f"تعذر الاتصال بـ Gemini: {last_error.text[:300]}")
+    details = "\n".join(failures[-4:])
     raise RuntimeError(
-        "الاتصال بـ Gemini استغرق وقتًا أطول من المتوقع. تحقق من الاتصال وحاول مرة أخرى."
+        "تعذر الحصول على رد من نماذج Gemini المتاحة بعد تجربة البدائل تلقائيًا. "
+        "قد يكون السبب نفاد الحصة اليومية أو ضغطًا مؤقتًا على Google. "
+        "تفاصيل المحاولات:\n" + details
     )
 
 def parse_json(prompt):
