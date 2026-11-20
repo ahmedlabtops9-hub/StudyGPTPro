@@ -1,7 +1,6 @@
 import streamlit as st
 import requests
 import json
-from datetime import datetime
 
 st.set_page_config(page_title="StudyGPT Enterprise", page_icon="🎓", layout="wide")
 
@@ -10,100 +9,32 @@ GEMINI_MODEL = "gemini-2.5-flash"
 BASE_URL = "https://googleapis.com"
 
 SUBJECTS = {
-    "البرمجة والذكاء الاصطناعي 💻": "أستاذ أول في علوم الحاسب والذكاء الاصطناعي وتطوير البرمجيات",
-    "التاريخ والحضارة 🏛️": "خبير ومؤرخ متخصص في مناهج التاريخ للصف الثاني الثانوي",
-    "اللغة العربية والنحو 📖": "كبير معلمي اللغة العربية والنحو والبلاغة والأدب",
-    "الفيزياء الحديثة ⚡": "أستاذ الفيزياء المتخصص في تبسيط القوانين والمسائل الفيزيائية",
-    "الرياضيات البحتة والتطبيقية 📐": "أستاذ الرياضيات المتخصص في التفاضل وحساب المثلثات والجبر",
-    "الكيمياء 🧪": "أستاذ الكيمياء المتخصص في المعادلات والتفاعلات الكيميائية",
-    "اللغة الإنجليزية 🌍": "خبير تدريس اللغة الإنجليزية والقواعد والترجمة",
-    "الأحياء 🧬": "أستاذ الأحياء والعلوم البيولوجية للصف الثاني الثانوي"
+    "البرمجة والذكاء الاصطناعي 💻": "أستاذ أول في علوم الحاسب والذكاء الاصطناعي",
+    "التاريخ والحضارة 🏛️": "خبير ومؤرخ متخصص في مناهج التاريخ",
+    "اللغة العربية والنحو 📖": "كبير معلمي اللغة العربية والنحو والبلاغة",
+    "الفيزياء الحديثة ⚡": "أستاذ الفيزياء المتخصص في تبسيط القوانين",
+    "الرياضيات 📐": "أستاذ الرياضيات المتخصص في التفاضل والجبر",
+    "الكيمياء 🧪": "أستاذ الكيمياء المتخصص في المعادلات",
+    "اللغة الإنجليزية 🌍": "خبير تدريس اللغة الإنجليزية والقواعد",
+    "الأحياء 🧬": "أستاذ الأحياء والعلوم البيولوجية"
 }
 
 st.markdown("""
 <style>
 @import url('https://googleapis.com');
-.stApp {
-    background: radial-gradient(circle at 10% 10%, #13182e 0%, #080a10 50%, #040508 100%);
-    color: #f8fafc;
-    font-family: 'Cairo', sans-serif;
-}
-[data-testid="stMarkdownContainer"], [data-testid="stChatMessageContent"], .hero-card, .fc-card, .kpi-box {
-    font-family: 'Cairo', sans-serif !important;
-    direction: rtl;
-    text-align: right;
-}
-[data-testid="stSidebar"] {
-    background: rgba(12, 16, 28, 0.96) !important;
-}
-.hero-card {
-    background: linear-gradient(135deg, rgba(30, 41, 59, 0.75), rgba(15, 23, 42, 0.95));
-    border: 1px solid rgba(129, 140, 248, 0.4);
-    border-radius: 20px;
-    padding: 24px 30px;
-    margin-bottom: 20px;
-}
-.badge {
-    display: inline-block;
-    background: rgba(16, 185, 129, 0.15);
-    color: #34d399;
-    border: 1px solid rgba(16, 185, 129, 0.45);
-    padding: 4px 14px;
-    border-radius: 50px;
-    font-size: 13px;
-    font-weight: 700;
-    margin-bottom: 10px;
-}
-.title-grad {
-    font-size: 34px;
-    font-weight: 900;
-    background: linear-gradient(90deg, #ffffff, #a5b4fc, #38bdf8);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    margin: 0;
-}
-.kpi-box {
-    background: rgba(17, 24, 39, 0.85);
-    border: 1px solid rgba(99, 102, 241, 0.35);
-    border-radius: 16px;
-    padding: 16px;
-    text-align: center;
-}
-.fc-card {
-    background: linear-gradient(145deg, #1e293b, #0f172a);
-    border: 2px solid rgba(99, 102, 241, 0.5);
-    border-radius: 22px;
-    padding: 40px 30px;
-    text-align: center;
-    margin: 18px 0;
-}
-.stButton > button {
-    background: linear-gradient(145deg, #1e293b, #0f172a) !important;
-    color: #f1f5f9 !important;
-    border: 1px solid rgba(99, 102, 241, 0.45) !important;
-    border-radius: 12px !important;
-    font-weight: 700 !important;
-    width: 100%;
-}
-[data-testid="stChatMessage"] {
-    background: rgba(17, 24, 39, 0.85) !important;
-    border: 1px solid rgba(255, 255, 255, 0.1) !important;
-    border-radius: 16px !important;
-}
+.stApp { background: radial-gradient(circle at 10% 10%, #13182e 0%, #080a10 50%, #040508 100%); color: #f8fafc; font-family: 'Cairo', sans-serif; }
+[data-testid="stMarkdownContainer"], [data-testid="stChatMessageContent"], .hero-card, .fc-card { font-family: 'Cairo', sans-serif !important; direction: rtl; text-align: right; }
+[data-testid="stSidebar"] { background: rgba(12, 16, 28, 0.96) !important; }
+.hero-card { background: linear-gradient(135deg, rgba(30, 41, 59, 0.75), rgba(15, 23, 42, 0.95)); border: 1px solid rgba(129, 140, 248, 0.4); border-radius: 20px; padding: 24px 30px; margin-bottom: 20px; }
+.badge { display: inline-block; background: rgba(16, 185, 129, 0.15); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.45); padding: 4px 14px; border-radius: 50px; font-size: 13px; font-weight: 700; margin-bottom: 10px; }
+.title-grad { font-size: 34px; font-weight: 900; background: linear-gradient(90deg, #ffffff, #a5b4fc, #38bdf8); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin: 0; }
+.fc-card { background: linear-gradient(145deg, #1e293b, #0f172a); border: 2px solid rgba(99, 102, 241, 0.5); border-radius: 22px; padding: 40px 30px; text-align: center; margin: 18px 0; }
+.stButton > button { background: linear-gradient(145deg, #1e293b, #0f172a) !important; color: #f1f5f9 !important; border: 1px solid rgba(99, 102, 241, 0.45) !important; border-radius: 12px !important; font-weight: 700 !important; width: 100%; }
+[data-testid="stChatMessage"] { background: rgba(17, 24, 39, 0.85) !important; border: 1px solid rgba(255, 255, 255, 0.1) !important; border-radius: 16px !important; }
 </style>
 """, unsafe_allow_html=True)
 
-for k, v in {
-    "messages": [],
-    "q_count": 0,
-    "exams": [],
-    "exam_data": None,
-    "exam_done": False,
-    "cards": [],
-    "c_idx": 0,
-    "c_flip": False,
-    "activity": {s: 10 for s in SUBJECTS}
-}.items():
+for k, v in {"messages": [], "q_count": 0, "exams": [], "exam_data": None, "exam_done": False, "cards": [], "c_idx": 0, "c_flip": False, "activity": {s: 10 for s in SUBJECTS}}.items():
     if k not in st.session_state:
         st.session_state[k] = v
 
@@ -118,7 +49,7 @@ def stream_gemini(history, sys_prompt):
                 if line and line.startswith(b"data: "):
                     try:
                         chunk = json.loads(line[6:].decode("utf-8"))
-                        yield chunk["candidates"]["content"]["parts"]["text"]
+                        yield chunk["candidates"][0]["content"]["parts"][0]["text"]
                     except Exception:
                         continue
     except Exception as e:
@@ -129,7 +60,7 @@ def get_json_gemini(prompt):
     payload = {"contents": [{"parts": [{"text": prompt}]}], "generationConfig": {"responseMimeType": "application/json"}}
     r = requests.post(url, json=payload, timeout=40)
     r.raise_for_status()
-    return json.loads(r.json()["candidates"]["content"]["parts"]["text"])
+    return json.loads(r.json()["candidates"][0]["content"]["parts"][0]["text"])
 
 with st.sidebar:
     st.markdown("## 🎓 StudyGPT **Enterprise**")
@@ -190,9 +121,9 @@ with t1:
         st.session_state.messages.append({"role": "assistant", "content": reply})
 
 with t2:
-    col_a, col_b = st.columns()
+    col_a, col_b = st.columns([3, 1])
     topic = col_a.text_input("اسم الدرس للامتحان:", placeholder="مثال: الخوارزميات، الدولة العباسية، النحو...")
-    num_q = col_b.selectbox("عدد الأسئلة:",)
+    num_q = col_b.selectbox("عدد الأسئلة:", [3, 5, 7])
     if st.button("🚀 ابدأ الامتحان الآن") and topic.strip():
         with st.spinner("جاري إعداد الامتحان..."):
             p = f'أنشئ {num_q} أسئلة اختيار من متعدد بالعربية في مادة {subject} عن "{topic}". أعد JSON فقط كقائمة كائنات بها: "question", "options" (4 اختيارات), "answer_index" (0-3), "explanation".'
@@ -238,3 +169,9 @@ with t3:
                 st.error(f"خطأ: {e}")
 
     if st.session_state.cards:
+        cards = st.session_state.cards
+        idx = st.session_state.c_idx
+        card = cards[idx]
+        st.progress((idx + 1) / len(cards), text=f"بطاقة {idx+1} من {len(cards)}")
+        txt_show = card["back"] if st.session_state.c_flip else card["front"]
+        label_show = "الإجابة النموذجية" if st.session_state.c_flip else "السؤال / المصطلح"
