@@ -326,42 +326,35 @@ def gemini(contents, system_instruction, json_mode=False):
         config["responseMimeType"] = "application/json"
 
     payload = {
-        "system_instruction": {"parts": [{"text": system_instruction}]},
+        "systemInstruction": {"parts": [{"text": system_instruction}]},
         "contents": contents,
         "generationConfig": config,
     }
     headers = {"x-goog-api-key": key, "Content-Type": "application/json"}
 
-    # Primary model followed by independent Flash fallbacks.
-    model_candidates = [
-        "gemini-3.5-flash-lite",
-        "gemini-3.7-flash",
-        "gemini-3.8-flash",
-        "gemini-3.6-flash",
-        "gemini-3.5-flash",
-        "gemini-3.1-flash-lite",
-        "gemini-2.5-flash",
-    ]
+    # Use the currently configured Gemini model only. Avoid deprecated fallback IDs.
+    model_candidates = [MODEL]
     failures = []
 
-    for model_index, model_name in enumerate(model_candidates):
+    for model_name in model_candidates:
         endpoint = (
             f"https://generativelanguage.googleapis.com/v1beta/"
             f"models/{model_name}:generateContent"
         )
-        # One quick retry for temporary server overload, then switch models.
-        attempts = 2 if model_index == 0 else 1
-
-        for attempt in range(attempts):
+        # Retry once only for temporary network/server or quota responses.
+        for attempt in range(2):
             try:
                 response = requests.post(
                     endpoint,
                     headers=headers,
                     json=payload,
-                    timeout=(5, 15),
+                    timeout=(5, 30),
                 )
             except requests.RequestException as error:
                 failures.append(f"{model_name}: network error ({type(error).__name__})")
+                if attempt == 0:
+                    time.sleep(1)
+                    continue
                 break
 
             if response.status_code == 200:
@@ -370,7 +363,7 @@ def gemini(contents, system_instruction, json_mode=False):
                 if not candidates:
                     raise RuntimeError("وصل رد فارغ من Gemini. جرّب صياغة السؤال مرة أخرى.")
                 parts = candidates[0].get("content", {}).get("parts", [])
-                answer = "\n".join(
+                answer = "\\n".join(
                     part.get("text", "") for part in parts if part.get("text")
                 )
                 if not answer.strip():
@@ -390,22 +383,18 @@ def gemini(contents, system_instruction, json_mode=False):
                 f"{model_name}: HTTP {status} {status_name} {message[:180]}"
             )
 
-            # Quota/overload/model availability: try the next model automatically.
-            if status in (408, 429, 500, 502, 503, 504, 404):
-                if status == 503 and attempt == 0:
-                    time.sleep(0.8)
-                    continue
-                break
+            # A 404 is a model/endpoint problem; trying obsolete model IDs cannot fix it.
+            if status in (408, 429, 500, 502, 503, 504) and attempt == 0:
+                time.sleep(1)
+                continue
 
-            # Authentication, permission, or malformed request errors will not
-            # be fixed by switching models, so report them clearly.
             raise RuntimeError(f"Gemini API ({status}): {message}")
 
-    details = "\n".join(failures[-4:])
+    details = "\\n".join(failures[-4:])
     raise RuntimeError(
-        "تعذر الحصول على رد من نماذج Gemini المتاحة بعد تجربة البدائل تلقائيًا. "
-        "إذا ظهر RESOURCE_EXHAUSTED أو quota فهذا يعني أن حد الاستخدام الخاص بمشروع Google AI Studio قد انتهى؛ تغيير النموذج وحده لن يتجاوز حد المشروع. "
-        "تفاصيل المحاولات:\n" + details
+        f"تعذر الحصول على رد من {MODEL} بعد إعادة المحاولة. "
+        "راجع اسم النموذج وصلاحية مفتاح Gemini وحدود الاستخدام. "
+        "تفاصيل المحاولات:\\n" + details
     )
 
 def parse_json(prompt):
@@ -606,8 +595,8 @@ with tutor:
                         if len(file_bytes) > 15 * 1024 * 1024:
                             raise ValueError("حجم الملف أكبر من 15 ميجابايت. ارفع ملفًا أصغر.")
                         user_parts.append({
-                            "inline_data": {
-                                "mime_type": uploaded_file.type or "application/octet-stream",
+                            "inlineData": {
+                                "mimeType": uploaded_file.type or "application/octet-stream",
                                 "data": base64.b64encode(file_bytes).decode("utf-8")
                             }
                         })
@@ -735,8 +724,8 @@ with bank:
                     if len(source_bytes) > 15 * 1024 * 1024:
                         raise ValueError("حجم الملف أكبر من 15 ميجابايت.")
                     user_parts.append({
-                        "inline_data": {
-                            "mime_type": source_file.type or "application/octet-stream",
+                        "inlineData": {
+                            "mimeType": source_file.type or "application/octet-stream",
                             "data": base64.b64encode(source_bytes).decode("utf-8"),
                         }
                     })
