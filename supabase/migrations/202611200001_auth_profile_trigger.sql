@@ -25,3 +25,8 @@ drop trigger if exists on_auth_user_created on auth.users;
 create trigger on_auth_user_created
   after insert on auth.users
   for each row execute procedure private.handle_new_user();
+
+-- A student may edit profile details but cannot promote their own account.
+revoke update on public.profiles from authenticated;
+grant update (display_name, phone, stage, school_days, timezone, updated_at)
+  on public.profiles to authenticated;
