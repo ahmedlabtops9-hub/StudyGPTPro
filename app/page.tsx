@@ -54,7 +54,7 @@ export default function HomePage() {
         <div className="workspace-label">مساحة الطالب</div>
         <nav className="side-nav">
           {nav.map(({label, icon: Icon}) => (
-            <button key={label} className={`nav-item ${active === label ? "active" : ""}`} onClick={() => {setActive(label);setMobileOpen(false);}}>
+            <button key={label} className={`nav-item ${active === label ? "active" : ""}`} onClick={() => {setActive(label);setMobileOpen(false);if(label === "المعلم الذكي") window.location.href="/tutor";}}>
               <Icon size={19}/><span>{label}</span>{label === "المعلم الذكي" && <i className="nav-dot"/>}
             </button>
           ))}
@@ -70,7 +70,7 @@ export default function HomePage() {
         <button className="nav-item settings"><Settings2 size={19}/><span>الإعدادات</span></button>
         <div className="profile">
           <div className="avatar">ط</div>
-          <div className="profile-text"><strong>حساب الطالب</strong><small>البكالوريا المصرية</small></div>
+          <a className="profile-text" href="/login" style={{textDecoration:"none",color:"inherit"}}><strong>حساب الطالب</strong><small>تسجيل الدخول / إنشاء حساب</small></a>
           <button className="profile-more" aria-label="خيارات الحساب">···</button>
         </div>
       </aside>
@@ -106,7 +106,7 @@ export default function HomePage() {
               <h2>سؤالك هو أول<br/><em>خطوة للفهم.</em></h2>
               <p>اسأل، ارفع سؤالًا من كتابك، أو اطلب شرح فكرة صعبة — وابدأ من حيث أنت.</p>
               <div className="hero-actions">
-                <button className="primary-btn" onClick={() => setActive("المعلم الذكي")}>ابدأ جلسة مذاكرة <ArrowLeft size={17}/></button>
+                <button className="primary-btn" onClick={() => {window.location.href="/tutor";}}>ابدأ جلسة مذاكرة <ArrowLeft size={17}/></button>
                 <span className="secure-note"><Check size={14}/> شرح منظم يناسب مستواك</span>
               </div>
             </div>
