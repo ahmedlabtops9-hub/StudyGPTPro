@@ -150,7 +150,77 @@ def parse_json(prompt):
     )
     return json.loads(raw)
 
-def init_state():
+def get_cloud_settings():
+    try:
+        url = st.secrets.get("SUPABASE_URL", "").rstrip("/")
+        key = st.secrets.get("SUPABASE_SERVICE_ROLE_KEY", "")
+        return url, key
+    except Exception:
+        return "", ""
+
+def get_user_email():
+    try:
+        if st.user.is_logged_in:
+            return str(st.user.email).strip().lower()
+    except Exception:
+        pass
+    return ""
+
+def restore_cloud_progress():
+    url, key, email = *get_cloud_settings(), get_user_email()
+    if not (url and key and email):
+        return False
+    headers = {"apikey": key, "Authorization": f"Bearer {key}"}
+    try:
+        response = requests.get(
+            f"{url}/rest/v1/study_progress",
+            headers=headers,
+            params={"user_email": f"eq.{email}", "select": "data", "limit": "1"},
+            timeout=12,
+        )
+        if response.status_code == 200 and response.json():
+            saved = response.json()[0].get("data", {})
+            for name in ("messages", "question_count", "exam_history", "exam_data",
+                         "exam_result", "cards", "card_index", "card_flipped", "activity"):
+                if name in saved:
+                    st.session_state[name] = saved[name]
+            return True
+    except (requests.RequestException, ValueError, KeyError, IndexError):
+        return False
+    return False
+
+def persist_cloud_progress():
+    url, key = get_cloud_settings()
+    email = get_user_email()
+    if not (url and key and email):
+        return False
+    data = {name: st.session_state.get(name) for name in (
+        "messages", "question_count", "exam_history", "exam_data", "exam_result",
+        "cards", "card_index", "card_flipped", "activity"
+    )}
+    headers = {
+        "apikey": key,
+        "Authorization": f"Bearer {key}",
+        "Content-Type": "application/json",
+        "Prefer": "resolution=merge-duplicates",
+    }
+    try:
+        response = requests.post(
+            f"{url}/rest/v1/study_progress",
+            headers=headers,
+            json={"user_email": email, "data": data},
+            timeout=12,
+        )
+        return response.status_code in (200, 201, 204)
+    except requests.RequestException:
+        return False
+
+def init_state()
+
+if get_user_email() and not st.session_state.get("_cloud_loaded", False):
+    restore_cloud_progress()
+    st.session_state["_cloud_loaded"] = True
+:
     defaults = {
         "messages": [], "question_count": 0, "exam_history": [],
         "exam_data": None, "exam_result": None, "cards": [],
@@ -166,6 +236,20 @@ init_state()
 with st.sidebar:
     st.markdown("## 🎓 StudyGPT Pro")
     st.caption("المساعد التعليمي الذكي لطلاب مصر")
+
+    signed_email = get_user_email()
+    if signed_email:
+        st.success("تم تسجيل الدخول")
+        st.caption(signed_email)
+        if st.button("تسجيل الخروج", use_container_width=True):
+            st.logout()
+    else:
+        if st.button("تسجيل الدخول بحساب Google", use_container_width=True):
+            try:
+                st.login()
+            except Exception:
+                st.error("إعداد Google OAuth غير مكتمل في Streamlit Secrets.")
+
     grade = st.selectbox("المرحلة الدراسية", [
         "المرحلة الإعدادية", "الصف الأول الثانوي", "الصف الثاني الثانوي",
         "الصف الثالث الثانوي", "البكالوريا"
@@ -396,4 +480,11 @@ with analytics:
         st.info("ستظهر نتائجك هنا بعد حل أول امتحان.")
 
 st.divider()
+if get_user_email():
+    if persist_cloud_progress():
+        st.caption("تم حفظ تقدمك على حسابك.")
+    else:
+        st.warning("الحفظ السحابي غير جاهز. راجع إعدادات Supabase.")
+else:
+    st.caption("سجّل الدخول بحساب Google لتفعيل حفظ تقدمك بعد إعداد الخدمة.")
 st.caption("StudyGPT Pro • منصة تعليمية تجريبية • Gemini AI")
