@@ -1,12 +1,8 @@
 import streamlit as st
 import requests
 import json
-import time
 from datetime import datetime
 
-# ==============================================================================
-# 1. إعدادات النظام والتهيئة الأساسية (System Configuration)
-# ==============================================================================
 st.set_page_config(
     page_title="StudyGPT Enterprise | منصة البكالوريا الذكية",
     page_icon="🎓",
@@ -14,9 +10,7 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# ضع مفتاح Google AI Studio الخاص بك هنا
-API_KEY = st.secrets.get("GEMINI_API_KEY", "my_secret_key")
-
+API_KEY = st.secrets.get("GEMINI_API_KEY", "local_key")
 GEMINI_MODEL = "gemini-2.5-flash"
 BASE_URL = "https://googleapis.com"
 
@@ -63,9 +57,6 @@ SUBJECTS = {
     }
 }
 
-# ==============================================================================
-# 2. محرك التصميم الفاخر (Luxury Dark Glassmorphism CSS Engine)
-# ==============================================================================
 def inject_custom_css():
     st.markdown("""
     <style>
@@ -84,14 +75,12 @@ def inject_custom_css():
 
         #MainMenu, footer, header {visibility: hidden;}
 
-        /* الشريط الجانبي الزجاجي */
         [data-testid="stSidebar"] {
             background: rgba(12, 16, 28, 0.92) !important;
             backdrop-filter: blur(20px);
             border-left: 1px solid rgba(99, 102, 241, 0.25);
         }
 
-        /* بانر الهيدر الرئيسي */
         .enterprise-header {
             background: linear-gradient(135deg, rgba(30, 41, 59, 0.65) 0%, rgba(15, 23, 42, 0.9) 100%);
             border: 1px solid rgba(129, 140, 248, 0.35);
@@ -131,7 +120,6 @@ def inject_custom_css():
             margin-top: 8px;
         }
 
-        /* بطاقات الإحصائيات */
         .kpi-card {
             background: rgba(17, 24, 39, 0.8);
             border: 1px solid rgba(99, 102, 241, 0.25);
@@ -151,7 +139,6 @@ def inject_custom_css():
             font-weight: 600;
         }
 
-        /* بطاقة الفلاش كارد التفاعلية */
         .flashcard-box {
             background: linear-gradient(145deg, #1e293b, #0f172a);
             border: 2px solid rgba(99, 102, 241, 0.45);
@@ -181,7 +168,6 @@ def inject_custom_css():
             line-height: 1.6;
         }
 
-        /* الأزرار الاحترافية */
         .stButton > button {
             background: linear-gradient(145deg, rgba(30, 41, 59, 0.85), rgba(15, 23, 42, 0.95)) !important;
             color: #f1f5f9 !important;
@@ -200,7 +186,6 @@ def inject_custom_css():
             box-shadow: 0 8px 25px rgba(99, 102, 241, 0.35) !important;
         }
 
-        /* فقاعات المحادثة */
         [data-testid="stChatMessage"] {
             background: rgba(17, 24, 39, 0.82) !important;
             border: 1px solid rgba(255, 255, 255, 0.08) !important;
@@ -209,7 +194,6 @@ def inject_custom_css():
             margin-bottom: 14px !important;
         }
 
-        /* التبويبات */
         .stTabs [data-baseweb="tab-list"] {
             gap: 10px;
             background: rgba(15, 23, 42, 0.6);
@@ -231,9 +215,6 @@ def inject_custom_css():
     </style>
     """, unsafe_allow_html=True)
 
-# ==============================================================================
-# 3. إدارة حالة الجلسة والبيانات (State & Analytics Manager)
-# ==============================================================================
 def init_session_state():
     defaults = {
         "messages": [],
@@ -250,9 +231,6 @@ def init_session_state():
         if key not in st.session_state:
             st.session_state[key] = val
 
-# ==============================================================================
-# 4. محرك الذكاء الاصطناعي (Gemini AI Core Engine)
-# ==============================================================================
 class AIEngine:
     @staticmethod
     def stream_chat(messages_history, system_prompt):
@@ -287,3 +265,38 @@ class AIEngine:
 
     @staticmethod
     def generate_structured_json(prompt):
+        url = f"{BASE_URL}/{GEMINI_MODEL}:generateContent?key={API_KEY}"
+        payload = {
+            "contents": [{"parts": [{"text": prompt}]}],
+            "generationConfig": {
+                "temperature": 0.4,
+                "responseMimeType": "application/json"
+            }
+        }
+        response = requests.post(url, json=payload, timeout=40)
+        response.raise_for_status()
+        raw_text = response.json()["candidates"]["content"]["parts"]["text"]
+        return json.loads(raw_text)
+
+def render_sidebar():
+    with st.sidebar:
+        st.markdown("## 🎓 StudyGPT **Enterprise**")
+        st.caption("منصة التعلم الذكي المتكاملة - نظام البكالوريا")
+        st.divider()
+
+        selected_subject = st.selectbox(
+            "📚 اختر المادة الدراسية النشطة:",
+            list(SUBJECTS.keys())
+        )
+
+        explanation_style = st.selectbox(
+            "🧠 استراتيجية الشرح:",
+            [
+                "شرح أكاديمي مبسط مع أمثلة تطبيقية",
+                "تلخيص مركز في نقاط ذهنية سريعة",
+                "تحليل عميق للمفاهيم والقوانين",
+                "تبسيط فائق للمبتدئين"
+            ]
+        )
+
+        st.divider()
