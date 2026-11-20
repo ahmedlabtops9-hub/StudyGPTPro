@@ -1,3 +1,4 @@
+import base64
 import json
 import os
 import streamlit as st
@@ -23,40 +24,45 @@ SUBJECTS = {
 st.markdown("""
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&display=swap');
-:root{color-scheme:light}
-html,body,[class*="css"]{font-family:'Cairo',sans-serif;color:#111}
-.stApp,[data-testid="stAppViewContainer"]{background:#fff;color:#111}
-[data-testid="stHeader"]{background:rgba(255,255,255,.97)}
-.block-container{max-width:1180px;padding-top:2rem;padding-bottom:3rem}
-[data-testid="stSidebar"]{background:#111;border-right:1px solid #333}
-[data-testid="stSidebar"] *{color:#fff!important}
-[data-testid="stSidebar"] [data-baseweb="select"]>div{background:#fff;border-color:#bbb;color:#111}
-[data-testid="stSidebar"] [data-baseweb="select"] *{color:#111!important}
-[data-testid="stMarkdownContainer"],[data-testid="stChatMessageContent"]{direction:rtl;text-align:right;color:#111}
-[data-testid="stMarkdownContainer"] p,[data-testid="stMarkdownContainer"] li{line-height:1.9;color:#111}
-.hero{padding:30px 34px;border-radius:20px;margin:4px 0 24px;background:#111;border:1px solid #111;box-shadow:0 10px 28px rgba(0,0,0,.12);color:#fff}
+:root{color-scheme:dark}
+html,body,[class*="css"]{font-family:'Cairo',sans-serif;color:#f4f7fc}
+.stApp,[data-testid="stAppViewContainer"]{background:radial-gradient(ellipse at 82% 4%,rgba(36,105,190,.34),transparent 34%),linear-gradient(135deg,#07101e 0%,#0b1729 54%,#102747 100%);color:#f4f7fc}
+[data-testid="stHeader"]{background:rgba(7,16,30,.82)}
+.block-container{max-width:1280px;padding-top:1.7rem;padding-bottom:3rem}
+[data-testid="stSidebar"]{background:linear-gradient(180deg,#101e35 0%,#0a1425 100%);border-right:1px solid #294366}
+[data-testid="stSidebar"] *{color:#f4f7fc}
+[data-testid="stSidebar"] [data-baseweb="select"]>div{background:#172943;border:1px solid #3b567b;color:#fff}
+[data-testid="stSidebar"] [data-baseweb="select"] *{color:#fff!important}
+[data-testid="stMarkdownContainer"],[data-testid="stChatMessageContent"]{direction:rtl;text-align:right;color:#f4f7fc}
+[data-testid="stMarkdownContainer"] p,[data-testid="stMarkdownContainer"] li{line-height:1.9;color:#f4f7fc}
+.hero{padding:30px 34px;border-radius:20px;margin:4px 0 24px;background:linear-gradient(115deg,#102847 0%,#173d69 58%,#087fae 100%);border:1px solid #315b87;box-shadow:0 14px 38px rgba(0,0,0,.24);color:#fff}
 .hero h1,.hero p{color:#fff}
 .hero h1{font-size:clamp(30px,4vw,42px);font-weight:900;margin:5px 0;letter-spacing:-.6px}
 .hero p{font-size:16px;margin-bottom:0}
-.stButton>button,.stDownloadButton>button,[data-testid="stFormSubmitButton"] button{border-radius:11px;background:#111!important;color:#fff!important;border:1px solid #111!important;font-weight:700;min-height:44px;transition:all .18s ease}
+.stButton>button,.stDownloadButton>button,[data-testid="stFormSubmitButton"] button{border-radius:11px;background:linear-gradient(105deg,#287cf0,#12a5ce)!important;color:#fff!important;border:1px solid #398edc!important;font-weight:700;min-height:44px;transition:all .18s ease}
 .stButton>button *, .stDownloadButton>button *, [data-testid="stFormSubmitButton"] button *{color:#fff!important;-webkit-text-fill-color:#fff!important}
-.stButton>button:hover,.stDownloadButton>button:hover,[data-testid="stFormSubmitButton"] button:hover{background:#333!important;border-color:#333!important;color:#fff!important}
-[data-testid="stMetric"]{background:#111;border:1px solid #111;padding:15px;border-radius:14px;box-shadow:0 4px 16px rgba(0,0,0,.08)}
-[data-testid="stMetricLabel"],[data-testid="stMetricValue"]{color:#fff!important}
-[data-testid="stMetric"] *{color:#fff!important}
-[data-testid="stTabs"] button{font-family:'Cairo',sans-serif;font-weight:700;color:#111!important}
-[data-testid="stTabs"] button[aria-selected="true"]{color:#111!important;border-bottom-color:#111}
-[data-testid="stChatMessage"]{background:#111;border:1px solid #111;border-radius:15px;padding:14px 18px;margin:10px 0;box-shadow:0 3px 12px rgba(0,0,0,.06)}
-[data-testid="stChatMessage"] *{color:#fff!important}
-[data-testid="stChatInput"]{background:#fff;border:1px solid #cfcfcf;border-radius:14px;box-shadow:0 6px 20px rgba(0,0,0,.05)}
-[data-testid="stChatInput"] textarea,[data-testid="stChatInput"] textarea:focus{background:#fff!important;color:#111!important;-webkit-text-fill-color:#111!important;caret-color:#111!important;opacity:1!important}
-[data-testid="stChatInput"] textarea::placeholder{color:#666!important;-webkit-text-fill-color:#666!important;opacity:1!important}
-[data-testid="stChatInput"] button{color:#111!important}
-.stTextInput input,.stTextArea textarea{background:#fff!important;color:#111!important;-webkit-text-fill-color:#111!important;border-color:#bbb!important;border-radius:10px!important}
-.stSelectbox [data-baseweb="select"]>div{background:#fff;color:#111;border-color:#bbb;border-radius:10px}
-.stRadio label,.stCheckbox label{color:#111!important}
-hr{border-color:#e5e5e5}
-[data-testid="stAlert"]{border-radius:12px;color:#111}
+.stButton>button:hover,.stDownloadButton>button:hover,[data-testid="stFormSubmitButton"] button:hover{filter:brightness(1.12);border-color:#75c8f5!important}
+[data-testid="stMetric"]{background:linear-gradient(145deg,#142b49,#1b3557);border:1px solid #36577e;padding:15px;border-radius:14px;box-shadow:0 7px 20px rgba(0,0,0,.18)}
+[data-testid="stMetricLabel"],[data-testid="stMetricValue"],[data-testid="stMetric"] *{color:#fff!important}
+[data-testid="stTabs"]{background:transparent}
+[data-testid="stTabs"] button{font-family:'Cairo',sans-serif;font-weight:700;color:#dce8f7!important}
+[data-testid="stTabs"] button[aria-selected="true"]{color:#fff!important;border-bottom-color:#35a9f0}
+[data-testid="stChatMessage"]{background:linear-gradient(145deg,#142944,#1b3554);border:1px solid #36577e;border-radius:15px;padding:14px 18px;margin:10px 0;box-shadow:0 5px 16px rgba(0,0,0,.16)}
+[data-testid="stChatMessage"] *{color:#f4f7fc!important}
+[data-testid="stChatInput"]{background:#172943;border:1px solid #45658d;border-radius:14px;box-shadow:0 7px 22px rgba(0,0,0,.18)}
+[data-testid="stChatInput"] textarea,[data-testid="stChatInput"] textarea:focus{background:#172943!important;color:#fff!important;-webkit-text-fill-color:#fff!important;caret-color:#fff!important;opacity:1!important}
+[data-testid="stChatInput"] textarea::placeholder{color:#b9c9df!important;-webkit-text-fill-color:#b9c9df!important;opacity:1!important}
+[data-testid="stChatInput"] button{color:#fff!important}
+.stTextInput input,.stTextArea textarea{background:#172943!important;color:#fff!important;-webkit-text-fill-color:#fff!important;border-color:#45658d!important;border-radius:10px!important}
+.stTextInput input::placeholder,.stTextArea textarea::placeholder{color:#b9c9df!important;-webkit-text-fill-color:#b9c9df!important}
+.stSelectbox [data-baseweb="select"]>div{background:#172943;color:#fff;border:1px solid #45658d;border-radius:10px}
+.stSelectbox [data-baseweb="select"] *{color:#fff!important}
+.stRadio label,.stCheckbox label{color:#f4f7fc!important}
+[data-testid="stFileUploader"]{background:#142944;border:1px dashed #52749c;border-radius:12px;padding:10px}
+[data-testid="stFileUploader"] *{color:#f4f7fc!important}
+[data-testid="stDataFrame"],[data-testid="stTable"]{background:#142944}
+[data-testid="stAlert"]{border-radius:12px}
+hr{border-color:#294362}
 @media(max-width:700px){.block-container{padding:1rem 1rem 2rem}.hero{padding:22px}.hero h1{font-size:30px}}
 </style>
 """, unsafe_allow_html=True)
@@ -85,7 +91,7 @@ def gemini(contents, system_instruction, json_mode=False):
     headers = {"x-goog-api-key": key, "Content-Type": "application/json"}
 
     # Start with the low-latency model; use the stronger Flash model only as fallback.
-    model_candidates = ["gemini-3.5-flash-lite", "gemini-3.8-flash"]
+    model_candidates = ["gemini-3.8-flash"]
     last_error = None
 
     for model_name in model_candidates:
@@ -242,10 +248,14 @@ with st.sidebar:
                 st.error("إعداد Google OAuth غير مكتمل في Streamlit Secrets.")
 
     grade = st.selectbox("المرحلة الدراسية", [
-        "المرحلة الإعدادية", "الصف الأول الثانوي", "الصف الثاني الثانوي",
-        "الصف الثالث الثانوي", "البكالوريا"
+        "الصف الأول الإعدادي", "الصف الثاني الإعدادي", "الصف الثالث الإعدادي",
+        "الصف الأول الثانوي", "الصف الثاني الثانوي", "الصف الثالث الثانوي",
+        "البكالوريا المصرية"
     ])
     subject = st.selectbox("المادة", list(SUBJECTS))
+    language = st.selectbox("لغة الشرح", [
+        "العربية المصرية", "العربية الفصحى", "English"
+    ])
     style = st.selectbox("أسلوب الشرح", [
         "شرح مبسط خطوة بخطوة", "شرح تفصيلي", "ملخص في نقاط", "أمثلة وتطبيقات"
     ])
@@ -279,7 +289,15 @@ tutor, exams, flashcards, analytics = st.tabs([
 
 with tutor:
     st.subheader("اسأل المعلم الذكي")
-    st.caption(f"{grade} • {subject}")
+    st.caption(f"{grade} • {subject} • {language}")
+    uploaded_file = st.file_uploader(
+        "اسأل كتابك أو صورة السؤال",
+        type=["pdf", "png", "jpg", "jpeg", "webp"],
+        accept_multiple_files=False,
+        help="ارفع صفحة PDF أو صورة واضحة، ثم اكتب سؤالك في مربع المحادثة. الحد الأقصى 15 ميجابايت."
+    )
+    if uploaded_file:
+        st.caption(f"الملف المرفق: {uploaded_file.name}")
     q1, q2, q3 = st.columns(3)
     quick = None
     if q1.button("اختبر فهمي", use_container_width=True):
@@ -302,8 +320,10 @@ with tutor:
             st.markdown(prompt)
         instructions = (
             f"أنت {SUBJECTS[subject]} لطلاب {grade}. أسلوب الشرح: {style}. "
-            "أجب بالعربية الواضحة وبشكل مباشر ومنظم. ابدأ بالإجابة، واستخدم أمثلة عند الحاجة. "
-            "لا تطل بلا داعٍ، ولا تخترع معلومات أو تنسب المحتوى لكتاب الوزارة دون تحقق."
+            f"لغة الإجابة المطلوبة: {language}. إذا اختار الطالب العربية المصرية فاستخدم تعبيرات مصرية تعليمية واضحة دون مبالغة. "
+            "أجب بشكل مباشر ومنظم، واستخدم أمثلة عند الحاجة. "
+            "إذا أرفق الطالب ملفًا أو صورة فاعتمد على محتواها أولًا، واذكر بوضوح إذا كانت معلومة غير ظاهرة أو غير مقروءة. "
+            "لا تخترع معلومات أو تنسب المحتوى لكتاب الوزارة دون تحقق."
         )
         with st.chat_message("assistant"):
             with st.spinner("StudyGPT يفكر..."):
@@ -312,7 +332,18 @@ with tutor:
                     for message in history:
                         role = "model" if message["role"] == "assistant" else "user"
                         contents.append({"role": role, "parts": [{"text": message["content"]}]})
-                    contents.append({"role": "user", "parts": [{"text": prompt}]})
+                    user_parts = [{"text": prompt}]
+                    if uploaded_file is not None:
+                        file_bytes = uploaded_file.getvalue()
+                        if len(file_bytes) > 15 * 1024 * 1024:
+                            raise ValueError("حجم الملف أكبر من 15 ميجابايت. ارفع ملفًا أصغر.")
+                        user_parts.append({
+                            "inline_data": {
+                                "mime_type": uploaded_file.type or "application/octet-stream",
+                                "data": base64.b64encode(file_bytes).decode("utf-8")
+                            }
+                        })
+                    contents.append({"role": "user", "parts": user_parts})
                     answer = gemini(contents, instructions)
                     st.markdown(answer)
                     st.session_state.messages.append({"role": "assistant", "content": answer})
