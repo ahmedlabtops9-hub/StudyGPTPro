@@ -334,10 +334,13 @@ def gemini(contents, system_instruction, json_mode=False):
 
     # Primary model followed by independent Flash fallbacks.
     model_candidates = [
-        "gemini-3.8-flash",
         "gemini-3.5-flash-lite",
         "gemini-3.7-flash",
+        "gemini-3.8-flash",
+        "gemini-3.6-flash",
         "gemini-3.5-flash",
+        "gemini-3.1-flash-lite",
+        "gemini-2.5-flash",
     ]
     failures = []
 
@@ -355,7 +358,7 @@ def gemini(contents, system_instruction, json_mode=False):
                     endpoint,
                     headers=headers,
                     json=payload,
-                    timeout=(8, 35),
+                    timeout=(5, 15),
                 )
             except requests.RequestException as error:
                 failures.append(f"{model_name}: network error ({type(error).__name__})")
@@ -401,7 +404,7 @@ def gemini(contents, system_instruction, json_mode=False):
     details = "\n".join(failures[-4:])
     raise RuntimeError(
         "تعذر الحصول على رد من نماذج Gemini المتاحة بعد تجربة البدائل تلقائيًا. "
-        "قد يكون السبب نفاد الحصة اليومية أو ضغطًا مؤقتًا على Google. "
+        "إذا ظهر RESOURCE_EXHAUSTED أو quota فهذا يعني أن حد الاستخدام الخاص بمشروع Google AI Studio قد انتهى؛ تغيير النموذج وحده لن يتجاوز حد المشروع. "
         "تفاصيل المحاولات:\n" + details
     )
 
