@@ -56,27 +56,50 @@ def gemini(contents, system_instruction, json_mode=False):
     }
     headers = {"x-goog-api-key": key, "Content-Type": "application/json"}
     response = None
-    for attempt in range(3):
-        try:
-            response = requests.post(
-                ENDPOINT,
-                headers=headers,
-                json=payload,
-                timeout=75,
-            )
-        except requests.RequestException as error:
-            if attempt < 2:
-                time.sleep(2 ** attempt * 2)
-                continue
-            raise RuntimeError("تعذر الاتصال بخدمة Gemini بعد 3 محاولات. تحقق من الاتصال وحاول لاحقًا.") from error
+    active_model = MODEL
+    model_candidates = [MODEL, "gemini-3.5-flash-lite"]
+    last_error = None
 
-        if response.status_code == 503 and attempt < 2:
-            time.sleep(2 ** attempt * 3)
+    for model_index, model_name in enumerate(model_candidates):
+        endpoint = f"https://generativelanguage.googleapis.com/v1beta/models/{model_name}:generateContent"
+        for attempt in range(2):
+            try:
+                response = requests.post(
+                    endpoint,
+                    headers=headers,
+                    json=payload,
+                    timeout=75,
+                )
+            except requests.RequestException as error:
+                last_error = error
+                if attempt == 0:
+                    time.sleep(2)
+                    continue
+                break
+
+            if response.status_code == 200:
+                active_model = model_name
+                break
+
+            if response.status_code == 503 and attempt == 0:
+                time.sleep(3)
+                continue
+
+            last_error = response
+            break
+
+        if response is not None and response.status_code == 200:
+            break
+
+        if model_index == 0 and response is not None and response.status_code == 503:
+            response = None
             continue
         break
 
     if response is None:
-        raise RuntimeError("تعذر الوصول إلى خدمة Gemini. حاول مرة أخرى لاحقًا.")
+        raise RuntimeError(
+            "تعذر الاتصال بخدمة Gemini. تحقق من الإنترنت ومفتاح API ثم حاول لاحقًا."
+        ) from (last_error if isinstance(last_error, Exception) else None)
 
     if response.status_code != 200:
         try:
@@ -85,8 +108,8 @@ def gemini(contents, system_instruction, json_mode=False):
             message = response.text
         if response.status_code == 503:
             raise RuntimeError(
-                "خدمة Gemini عليها ضغط مرتفع حاليًا. حاولنا تلقائيًا 3 مرات ولم تتوفر الخدمة. "
-                "المشكلة من جهة خوادم Gemini وليست من إجابتك. انتظر قليلًا ثم أعد المحاولة."
+                "Gemini 3.8 والنموذج البديل مشغولان حاليًا. أعد المحاولة بعد قليل؛ "
+                "المشكلة من توفر الخدمة وليست من صياغة سؤالك."
             )
         raise RuntimeError(f"Gemini API ({response.status_code}): {message}")
     data = response.json()
