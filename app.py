@@ -63,6 +63,61 @@ html,body,[class*="css"]{font-family:'Cairo',sans-serif;color:#f4f7fc}
 [data-testid="stDataFrame"],[data-testid="stTable"]{background:#142944}
 [data-testid="stAlert"]{border-radius:12px}
 hr{border-color:#294362}
+/* Strong contrast fixes for Streamlit/BaseWeb widgets */
+[data-testid="stSidebar"] label,
+[data-testid="stSidebar"] [data-testid="stWidgetLabel"],
+[data-testid="stSidebar"] [data-testid="stWidgetLabel"] p{color:#f4f7fc!important}
+[data-testid="stSidebar"] [data-baseweb="select"],
+[data-testid="stSidebar"] [data-baseweb="select"]>div,
+[data-testid="stSidebar"] [data-baseweb="select"] input,
+[data-testid="stSidebar"] [data-baseweb="select"] [role="combobox"]{
+  background:#172943!important;color:#fff!important;-webkit-text-fill-color:#fff!important;
+  border-color:#52749c!important
+}
+[data-testid="stSidebar"] [data-baseweb="select"] span,
+[data-testid="stSidebar"] [data-baseweb="select"] div,
+[data-testid="stSidebar"] [data-baseweb="select"] svg{color:#fff!important;fill:#fff!important}
+[data-baseweb="popover"],[data-baseweb="menu"],[role="listbox"]{
+  background:#142944!important;color:#fff!important;border:1px solid #52749c!important
+}
+[role="option],[role="listbox"] *,[data-baseweb="menu"] *{
+  background-color:#142944!important;color:#fff!important
+}
+[role="option"]:hover,[aria-selected="true"]{background:#24517d!important;color:#fff!important}
+[data-testid="stFileUploader"],[data-testid="stFileUploader"] section,
+[data-testid="stFileUploaderDropzone"]{
+  background:#142944!important;color:#f4f7fc!important;border:1px dashed #6485ad!important
+}
+[data-testid="stFileUploader"] *,
+[data-testid="stFileUploaderDropzone"] *{
+  color:#f4f7fc!important;-webkit-text-fill-color:#f4f7fc!important
+}
+[data-testid="stFileUploader"] button{
+  background:#203d60!important;color:#fff!important;border:1px solid #6485ad!important
+}
+[data-testid="stFileUploader"] button *{color:#fff!important;-webkit-text-fill-color:#fff!important}
+[data-testid="stChatInput"],[data-testid="stChatInput"]>div,
+[data-testid="stChatInput"] textarea{
+  background:#172943!important;color:#fff!important;-webkit-text-fill-color:#fff!important
+}
+[data-testid="stChatInput"] textarea::placeholder{
+  color:#c6d5e8!important;-webkit-text-fill-color:#c6d5e8!important;opacity:1!important
+}
+[data-testid="stTextInput"] input,[data-testid="stTextArea"] textarea,
+[data-testid="stNumberInput"] input{
+  background:#172943!important;color:#fff!important;-webkit-text-fill-color:#fff!important;
+  border:1px solid #52749c!important
+}
+[data-testid="stTextInput"] input::placeholder,
+[data-testid="stTextArea"] textarea::placeholder{
+  color:#c6d5e8!important;-webkit-text-fill-color:#c6d5e8!important;opacity:1!important
+}
+[data-testid="stRadio"] label,[data-testid="stCheckbox"] label,
+[data-testid="stSlider"] label{color:#f4f7fc!important}
+[data-testid="stRadio"] [data-testid="stMarkdownContainer"] p{color:#f4f7fc!important}
+[data-testid="stForm"]{background:rgba(20,41,68,.55);border:1px solid #36577e;border-radius:14px;padding:16px}
+[data-testid="stCaptionContainer"],small{color:#c1cfe1!important}
+
 @media(max-width:700px){.block-container{padding:1rem 1rem 2rem}.hero{padding:22px}.hero h1{font-size:30px}}
 </style>
 """, unsafe_allow_html=True)
