@@ -5,7 +5,7 @@ import requests
 
 st.set_page_config(page_title="StudyGPT Pro", page_icon="🎓", layout="wide")
 
-MODEL = "gemini-2.5-flash"
+MODEL = "gemini-3.8-flash"
 ENDPOINT = f"https://generativelanguage.googleapis.com/v1beta/models/{MODEL}:generateContent"
 SUBJECTS = {
     "اللغة العربية": "معلم لغة عربية ونحو وبلاغة",
