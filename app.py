@@ -25,32 +25,32 @@ st.markdown("""
 @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&display=swap');
 :root{color-scheme:light}
 html,body,[class*="css"]{font-family:'Cairo',sans-serif}
-.stApp,[data-testid="stAppViewContainer"]{background:#f4f7fb;color:#17263d}
-[data-testid="stHeader"]{background:rgba(244,247,251,.92)}
+.stApp,[data-testid="stAppViewContainer"]{background:#f7f5ef;color:#203b35}
+[data-testid="stHeader"]{background:rgba(247,245,239,.94)}
 .block-container{max-width:1180px;padding-top:2rem;padding-bottom:3rem}
-[data-testid="stSidebar"]{background:#101f35;border-left:1px solid #263b57}
-[data-testid="stSidebar"] *{color:#edf4ff}
-[data-testid="stSidebar"] [data-baseweb="select"]>div{background:#1b304c;border-color:#38516f}
-[data-testid="stMarkdownContainer"],[data-testid="stChatMessageContent"]{direction:rtl;text-align:right;color:#17263d}
+[data-testid="stSidebar"]{background:#173f38;border-left:1px solid #2c5b50}
+[data-testid="stSidebar"] *{color:#f4f2e9}
+[data-testid="stSidebar"] [data-baseweb="select"]>div{background:#214d44;border-color:#55766b}
+[data-testid="stMarkdownContainer"],[data-testid="stChatMessageContent"]{direction:rtl;text-align:right;color:#203b35}
 [data-testid="stMarkdownContainer"] p,[data-testid="stMarkdownContainer"] li{line-height:1.9}
-.hero{padding:30px 34px;border-radius:22px;margin:4px 0 24px;background:linear-gradient(115deg,#12243c 0%,#1d4266 62%,#167d83 100%);border:1px solid #294b68;box-shadow:0 14px 36px rgba(18,36,60,.12);color:#fff}
+.hero{padding:30px 34px;border-radius:22px;margin:4px 0 24px;background:linear-gradient(120deg,#173f38 0%,#286458 68%,#b18a4a 150%);border:1px solid #416c5e;box-shadow:0 14px 36px rgba(31,65,56,.13);color:#fff}
 .hero h1{font-size:clamp(30px,4vw,42px);font-weight:900;margin:5px 0;color:#fff;letter-spacing:-.6px}
-.hero p{color:#dce9f4;font-size:16px;margin-bottom:0}
-.stButton>button,.stDownloadButton>button,[data-testid="stFormSubmitButton"] button{border-radius:12px;background:#173d5d;color:#fff;border:1px solid #244f70;font-weight:700;min-height:44px;transition:all .18s ease}
-.stButton>button:hover,.stDownloadButton>button:hover{background:#0f766e;border-color:#0f766e;color:#fff}
-[data-testid="stMetric"]{background:#fff;border:1px solid #e1e8f0;padding:15px;border-radius:15px;box-shadow:0 5px 18px rgba(26,45,70,.045)}
-[data-testid="stMetricLabel"],[data-testid="stMetricValue"]{color:#17263d}
-[data-testid="stTabs"] button{font-family:'Cairo',sans-serif;font-weight:700;color:#52647a}
-[data-testid="stTabs"] button[aria-selected="true"]{color:#0f766e;border-bottom-color:#0f766e}
-[data-testid="stChatMessage"]{background:#fff;border:1px solid #e5ebf2;border-radius:16px;padding:14px 18px;margin:10px 0;box-shadow:0 4px 14px rgba(20,40,65,.035)}
-[data-testid="stChatInput"]{background:#fff;border:1px solid #cbd7e4;border-radius:16px;box-shadow:0 8px 24px rgba(25,45,70,.08)}
-[data-testid="stChatInput"] textarea,[data-testid="stChatInput"] textarea:focus{background:#fff!important;color:#17263d!important;-webkit-text-fill-color:#17263d!important;caret-color:#0f766e!important;opacity:1!important}
-[data-testid="stChatInput"] textarea::placeholder{color:#8291a4!important;-webkit-text-fill-color:#8291a4!important;opacity:1!important}
-[data-testid="stChatInput"] button{color:#0f766e!important}
-.stTextInput input,.stTextArea textarea{background:#fff!important;color:#17263d!important;-webkit-text-fill-color:#17263d!important;border-color:#cbd7e4!important;border-radius:11px!important}
-.stSelectbox [data-baseweb="select"]>div{background:#fff;color:#17263d;border-color:#cbd7e4;border-radius:11px}
-.stRadio label,.stCheckbox label{color:#263a52}
-hr{border-color:#e2e9f1}
+.hero p{color:#e2eee6;font-size:16px;margin-bottom:0}
+.stButton>button,.stDownloadButton>button,[data-testid="stFormSubmitButton"] button{border-radius:12px;background:#24594e;color:#fff;border:1px solid #24594e;font-weight:700;min-height:44px;transition:all .18s ease}
+.stButton>button:hover,.stDownloadButton>button:hover{background:#b18a4a;border-color:#b18a4a;color:#fff}
+[data-testid="stMetric"]{background:#fffefa;border:1px solid #e8e2d4;padding:15px;border-radius:15px;box-shadow:0 5px 18px rgba(45,61,51,.045)}
+[data-testid="stMetricLabel"],[data-testid="stMetricValue"]{color:#203b35}
+[data-testid="stTabs"] button{font-family:'Cairo',sans-serif;font-weight:700;color:#64766d}
+[data-testid="stTabs"] button[aria-selected="true"]{color:#24594e;border-bottom-color:#b18a4a}
+[data-testid="stChatMessage"]{background:#fffefa;border:1px solid #e8e2d4;border-radius:16px;padding:14px 18px;margin:10px 0;box-shadow:0 4px 14px rgba(45,61,51,.035)}
+[data-testid="stChatInput"]{background:#fffefa;border:1px solid #d8dfd5;border-radius:16px;box-shadow:0 8px 24px rgba(45,61,51,.07)}
+[data-testid="stChatInput"] textarea,[data-testid="stChatInput"] textarea:focus{background:#fffefa!important;color:#203b35!important;-webkit-text-fill-color:#203b35!important;caret-color:#b18a4a!important;opacity:1!important}
+[data-testid="stChatInput"] textarea::placeholder{color:#84948a!important;-webkit-text-fill-color:#84948a!important;opacity:1!important}
+[data-testid="stChatInput"] button{color:#24594e!important}
+.stTextInput input,.stTextArea textarea{background:#fffefa!important;color:#203b35!important;-webkit-text-fill-color:#203b35!important;border-color:#d8dfd5!important;border-radius:11px!important}
+.stSelectbox [data-baseweb="select"]>div{background:#fffefa;color:#203b35;border-color:#d8dfd5;border-radius:11px}
+.stRadio label,.stCheckbox label{color:#304d43}
+hr{border-color:#e8e2d4}
 @media(max-width:700px){.block-container{padding:1rem 1rem 2rem}.hero{padding:22px}.hero h1{font-size:30px}}
 </style>
 """, unsafe_allow_html=True)
@@ -192,7 +192,7 @@ with st.sidebar:
 
 st.markdown("""
 <div class="hero">
-<div style="color:#7dd3fc;font-weight:800">YOUR AI LEARNING COMPANION</div>
+<div style="color:#e5c98e;font-weight:800">SMART LEARNING • MADE FOR STUDENTS</div>
 <h1>StudyGPT Pro</h1>
 <p>افهم دروسك، تدرب على الامتحانات، وتابع تقدمك في مكان واحد.</p>
 </div>
