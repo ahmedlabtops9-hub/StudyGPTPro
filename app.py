@@ -25,32 +25,33 @@ st.markdown("""
 @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&display=swap');
 :root{color-scheme:light}
 html,body,[class*="css"]{font-family:'Cairo',sans-serif}
-.stApp,[data-testid="stAppViewContainer"]{background:#f7f5ef;color:#203b35}
-[data-testid="stHeader"]{background:rgba(247,245,239,.94)}
+.stApp,[data-testid="stAppViewContainer"]{background:#fff;color:#111}
+[data-testid="stHeader"]{background:rgba(255,255,255,.96)}
 .block-container{max-width:1180px;padding-top:2rem;padding-bottom:3rem}
-[data-testid="stSidebar"]{background:#173f38;border-left:1px solid #2c5b50}
-[data-testid="stSidebar"] *{color:#f4f2e9}
-[data-testid="stSidebar"] [data-baseweb="select"]>div{background:#214d44;border-color:#55766b}
-[data-testid="stMarkdownContainer"],[data-testid="stChatMessageContent"]{direction:rtl;text-align:right;color:#203b35}
-[data-testid="stMarkdownContainer"] p,[data-testid="stMarkdownContainer"] li{line-height:1.9}
-.hero{padding:30px 34px;border-radius:22px;margin:4px 0 24px;background:linear-gradient(120deg,#173f38 0%,#286458 68%,#b18a4a 150%);border:1px solid #416c5e;box-shadow:0 14px 36px rgba(31,65,56,.13);color:#fff}
+[data-testid="stSidebar"]{background:#111;border-right:1px solid #292929}
+[data-testid="stSidebar"] *{color:#f7f7f7}
+[data-testid="stSidebar"] [data-baseweb="select"]>div{background:#222;border-color:#555;color:#fff}
+[data-testid="stMarkdownContainer"],[data-testid="stChatMessageContent"]{direction:rtl;text-align:right;color:#151515}
+[data-testid="stMarkdownContainer"] p,[data-testid="stMarkdownContainer"] li{line-height:1.9;color:#222}
+.hero{padding:30px 34px;border-radius:20px;margin:4px 0 24px;background:#111;border:1px solid #333;box-shadow:0 12px 32px rgba(0,0,0,.10);color:#fff}
 .hero h1{font-size:clamp(30px,4vw,42px);font-weight:900;margin:5px 0;color:#fff;letter-spacing:-.6px}
-.hero p{color:#e2eee6;font-size:16px;margin-bottom:0}
-.stButton>button,.stDownloadButton>button,[data-testid="stFormSubmitButton"] button{border-radius:12px;background:#24594e;color:#fff;border:1px solid #24594e;font-weight:700;min-height:44px;transition:all .18s ease}
-.stButton>button:hover,.stDownloadButton>button:hover{background:#b18a4a;border-color:#b18a4a;color:#fff}
-[data-testid="stMetric"]{background:#fffefa;border:1px solid #e8e2d4;padding:15px;border-radius:15px;box-shadow:0 5px 18px rgba(45,61,51,.045)}
-[data-testid="stMetricLabel"],[data-testid="stMetricValue"]{color:#203b35}
-[data-testid="stTabs"] button{font-family:'Cairo',sans-serif;font-weight:700;color:#64766d}
-[data-testid="stTabs"] button[aria-selected="true"]{color:#24594e;border-bottom-color:#b18a4a}
-[data-testid="stChatMessage"]{background:#fffefa;border:1px solid #e8e2d4;border-radius:16px;padding:14px 18px;margin:10px 0;box-shadow:0 4px 14px rgba(45,61,51,.035)}
-[data-testid="stChatInput"]{background:#fffefa;border:1px solid #d8dfd5;border-radius:16px;box-shadow:0 8px 24px rgba(45,61,51,.07)}
-[data-testid="stChatInput"] textarea,[data-testid="stChatInput"] textarea:focus{background:#fffefa!important;color:#203b35!important;-webkit-text-fill-color:#203b35!important;caret-color:#b18a4a!important;opacity:1!important}
-[data-testid="stChatInput"] textarea::placeholder{color:#84948a!important;-webkit-text-fill-color:#84948a!important;opacity:1!important}
-[data-testid="stChatInput"] button{color:#24594e!important}
-.stTextInput input,.stTextArea textarea{background:#fffefa!important;color:#203b35!important;-webkit-text-fill-color:#203b35!important;border-color:#d8dfd5!important;border-radius:11px!important}
-.stSelectbox [data-baseweb="select"]>div{background:#fffefa;color:#203b35;border-color:#d8dfd5;border-radius:11px}
-.stRadio label,.stCheckbox label{color:#304d43}
-hr{border-color:#e8e2d4}
+.hero p{color:#e5e5e5;font-size:16px;margin-bottom:0}
+.stButton>button,.stDownloadButton>button,[data-testid="stFormSubmitButton"] button{border-radius:11px;background:#111;color:#fff;border:1px solid #111;font-weight:700;min-height:44px;transition:all .18s ease}
+.stButton>button:hover,.stDownloadButton>button:hover,[data-testid="stFormSubmitButton"] button:hover{background:#333;border-color:#333;color:#fff}
+[data-testid="stMetric"]{background:#fff;border:1px solid #dedede;padding:15px;border-radius:14px;box-shadow:0 4px 16px rgba(0,0,0,.035)}
+[data-testid="stMetricLabel"],[data-testid="stMetricValue"]{color:#111}
+[data-testid="stTabs"] button{font-family:'Cairo',sans-serif;font-weight:700;color:#666}
+[data-testid="stTabs"] button[aria-selected="true"]{color:#111;border-bottom-color:#111}
+[data-testid="stChatMessage"]{background:#fff;border:1px solid #e5e5e5;border-radius:15px;padding:14px 18px;margin:10px 0;box-shadow:0 3px 12px rgba(0,0,0,.03)}
+[data-testid="stChatInput"]{background:#fff;border:1px solid #cfcfcf;border-radius:14px;box-shadow:0 6px 20px rgba(0,0,0,.05)}
+[data-testid="stChatInput"] textarea,[data-testid="stChatInput"] textarea:focus{background:#fff!important;color:#111!important;-webkit-text-fill-color:#111!important;caret-color:#111!important;opacity:1!important}
+[data-testid="stChatInput"] textarea::placeholder{color:#777!important;-webkit-text-fill-color:#777!important;opacity:1!important}
+[data-testid="stChatInput"] button{color:#111!important}
+.stTextInput input,.stTextArea textarea{background:#fff!important;color:#111!important;-webkit-text-fill-color:#111!important;border-color:#ccc!important;border-radius:10px!important}
+.stSelectbox [data-baseweb="select"]>div{background:#fff;color:#111;border-color:#ccc;border-radius:10px}
+.stRadio label,.stCheckbox label{color:#222}
+hr{border-color:#e5e5e5}
+[data-testid="stAlert"]{border-radius:12px}
 @media(max-width:700px){.block-container{padding:1rem 1rem 2rem}.hero{padding:22px}.hero h1{font-size:30px}}
 </style>
 """, unsafe_allow_html=True)
@@ -275,7 +276,7 @@ with st.sidebar:
 
 st.markdown("""
 <div class="hero">
-<div style="color:#e5c98e;font-weight:800">SMART LEARNING • MADE FOR STUDENTS</div>
+<div style="color:#ffffff;font-weight:800">SMART LEARNING • MADE FOR STUDENTS</div>
 <h1>StudyGPT Pro</h1>
 <p>افهم دروسك، تدرب على الامتحانات، وتابع تقدمك في مكان واحد.</p>
 </div>
