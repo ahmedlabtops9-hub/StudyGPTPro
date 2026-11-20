@@ -262,6 +262,50 @@ hr{border-color:#294362}
 [data-testid="stCaptionContainer"],small{color:#c1cfe1!important}
 
 @media(max-width:700px){.block-container{padding:1rem 1rem 2rem}.hero{padding:22px}.hero h1{font-size:30px}}
+
+/* User-requested fix: BLACK text on the existing LIGHT controls */
+[data-testid="stSidebar"] [data-testid="stSelectbox"] [data-baseweb="select"],
+[data-testid="stSidebar"] [data-testid="stSelectbox"] [data-baseweb="select"] > div,
+[data-testid="stSidebar"] [data-testid="stSelectbox"] [data-baseweb="select"] div,
+[data-testid="stSidebar"] [data-testid="stSelectbox"] [data-baseweb="select"] span,
+[data-testid="stSidebar"] [data-testid="stSelectbox"] [data-baseweb="select"] input,
+[data-testid="stSidebar"] .stSelectbox [data-baseweb="select"] *,
+[data-testid="stSelectbox"] [data-baseweb="select"] * {
+  color:#111827!important;
+  -webkit-text-fill-color:#111827!important;
+}
+[data-testid="stSidebar"] [data-testid="stSelectbox"] [data-baseweb="select"] svg,
+[data-testid="stSelectbox"] [data-baseweb="select"] svg {
+  fill:#111827!important;color:#111827!important;
+}
+[data-baseweb="popover"] [role="listbox"],
+[data-baseweb="popover"] [role="option"],
+[data-baseweb="popover"] [role="option"] *,
+[data-baseweb="menu"],[data-baseweb="menu"] * {
+  background:#ffffff!important;
+  color:#111827!important;
+  -webkit-text-fill-color:#111827!important;
+}
+[data-testid="stFileUploader"],
+[data-testid="stFileUploader"] *,
+[data-testid="stFileUploaderDropzone"],
+[data-testid="stFileUploaderDropzone"] *,
+[data-testid="stFileUploader"] button,
+[data-testid="stFileUploader"] button * {
+  color:#111827!important;
+  -webkit-text-fill-color:#111827!important;
+}
+[data-testid="stFileUploader"] svg,
+[data-testid="stFileUploaderDropzone"] svg {
+  fill:#111827!important;color:#111827!important;
+}
+[data-testid="stChatInput"] button,
+[data-testid="stChatInput"] button *,
+[data-testid="stChatInput"] button svg {
+  color:#111827!important;
+  fill:#111827!important;
+  -webkit-text-fill-color:#111827!important;
+}
 </style>
 """, unsafe_allow_html=True)
 
