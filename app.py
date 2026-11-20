@@ -21,7 +21,7 @@ SUBJECTS = {
     "البرمجة والذكاء الاصطناعي": "معلم برمجة وعلوم حاسب",
 }
 
-st.markdown("""
+st.markdown(r'''
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&display=swap');
 :root{color-scheme:dark}
@@ -307,7 +307,7 @@ hr{border-color:#294362}
   -webkit-text-fill-color:#111827!important;
 }
 </style>
-""", unsafe_allow_html=True)
+''', unsafe_allow_html=True)
 
 def api_key():
     try:
