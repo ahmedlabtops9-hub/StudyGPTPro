@@ -22,16 +22,36 @@ SUBJECTS = {
 
 st.markdown("""
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&display=swap');
+:root{color-scheme:light}
 html,body,[class*="css"]{font-family:'Cairo',sans-serif}
-.stApp{background:radial-gradient(ellipse at 12% 0%,#172b4b 0%,#091321 42%,#07101c 100%);color:#f8fafc}
-[data-testid="stSidebar"]{background:#0b1728}
-[data-testid="stMarkdownContainer"],[data-testid="stChatMessageContent"]{direction:rtl;text-align:right}
-.hero{padding:26px 30px;border-radius:20px;margin:4px 0 22px;background:linear-gradient(120deg,#173766,#101c30);border:1px solid #315887}
-.hero h1{font-size:38px;font-weight:900;margin:4px 0}
-.hero p{color:#c5d5e9}
-.stButton>button,.stDownloadButton>button{border-radius:11px;background:#172d49;color:white;border:1px solid #365b83;font-weight:700;min-height:42px}
-[data-testid="stMetric"]{background:#14243a;border:1px solid #2b4564;padding:12px;border-radius:14px}
+.stApp,[data-testid="stAppViewContainer"]{background:#f4f7fb;color:#17263d}
+[data-testid="stHeader"]{background:rgba(244,247,251,.92)}
+.block-container{max-width:1180px;padding-top:2rem;padding-bottom:3rem}
+[data-testid="stSidebar"]{background:#101f35;border-left:1px solid #263b57}
+[data-testid="stSidebar"] *{color:#edf4ff}
+[data-testid="stSidebar"] [data-baseweb="select"]>div{background:#1b304c;border-color:#38516f}
+[data-testid="stMarkdownContainer"],[data-testid="stChatMessageContent"]{direction:rtl;text-align:right;color:#17263d}
+[data-testid="stMarkdownContainer"] p,[data-testid="stMarkdownContainer"] li{line-height:1.9}
+.hero{padding:30px 34px;border-radius:22px;margin:4px 0 24px;background:linear-gradient(115deg,#12243c 0%,#1d4266 62%,#167d83 100%);border:1px solid #294b68;box-shadow:0 14px 36px rgba(18,36,60,.12);color:#fff}
+.hero h1{font-size:clamp(30px,4vw,42px);font-weight:900;margin:5px 0;color:#fff;letter-spacing:-.6px}
+.hero p{color:#dce9f4;font-size:16px;margin-bottom:0}
+.stButton>button,.stDownloadButton>button,[data-testid="stFormSubmitButton"] button{border-radius:12px;background:#173d5d;color:#fff;border:1px solid #244f70;font-weight:700;min-height:44px;transition:all .18s ease}
+.stButton>button:hover,.stDownloadButton>button:hover{background:#0f766e;border-color:#0f766e;color:#fff}
+[data-testid="stMetric"]{background:#fff;border:1px solid #e1e8f0;padding:15px;border-radius:15px;box-shadow:0 5px 18px rgba(26,45,70,.045)}
+[data-testid="stMetricLabel"],[data-testid="stMetricValue"]{color:#17263d}
+[data-testid="stTabs"] button{font-family:'Cairo',sans-serif;font-weight:700;color:#52647a}
+[data-testid="stTabs"] button[aria-selected="true"]{color:#0f766e;border-bottom-color:#0f766e}
+[data-testid="stChatMessage"]{background:#fff;border:1px solid #e5ebf2;border-radius:16px;padding:14px 18px;margin:10px 0;box-shadow:0 4px 14px rgba(20,40,65,.035)}
+[data-testid="stChatInput"]{background:#fff;border:1px solid #cbd7e4;border-radius:16px;box-shadow:0 8px 24px rgba(25,45,70,.08)}
+[data-testid="stChatInput"] textarea,[data-testid="stChatInput"] textarea:focus{background:#fff!important;color:#17263d!important;-webkit-text-fill-color:#17263d!important;caret-color:#0f766e!important;opacity:1!important}
+[data-testid="stChatInput"] textarea::placeholder{color:#8291a4!important;-webkit-text-fill-color:#8291a4!important;opacity:1!important}
+[data-testid="stChatInput"] button{color:#0f766e!important}
+.stTextInput input,.stTextArea textarea{background:#fff!important;color:#17263d!important;-webkit-text-fill-color:#17263d!important;border-color:#cbd7e4!important;border-radius:11px!important}
+.stSelectbox [data-baseweb="select"]>div{background:#fff;color:#17263d;border-color:#cbd7e4;border-radius:11px}
+.stRadio label,.stCheckbox label{color:#263a52}
+hr{border-color:#e2e9f1}
+@media(max-width:700px){.block-container{padding:1rem 1rem 2rem}.hero{padding:22px}.hero h1{font-size:30px}}
 </style>
 """, unsafe_allow_html=True)
 
@@ -46,7 +66,7 @@ def gemini(contents, system_instruction, json_mode=False):
     key = api_key()
     if not key:
         raise RuntimeError("مفتاح Gemini غير مضبوط. أضف GEMINI_API_KEY في Streamlit Secrets.")
-    config = {"temperature": 0.6, "maxOutputTokens": 4096}
+    config = {"temperature": 0.45, "maxOutputTokens": 2048}
     if json_mode:
         config["responseMimeType"] = "application/json"
     payload = {
@@ -199,7 +219,7 @@ with tutor:
     typed = st.chat_input(f"اكتب سؤالك في {subject}...")
     prompt = quick or typed
     if prompt:
-        history = list(st.session_state.messages)
+        history = list(st.session_state.messages[-6:])
         st.session_state.messages.append({"role": "user", "content": prompt})
         st.session_state.question_count += 1
         st.session_state.activity[subject] += 1
@@ -207,8 +227,8 @@ with tutor:
             st.markdown(prompt)
         instructions = (
             f"أنت {SUBJECTS[subject]} لطلاب {grade}. أسلوب الشرح: {style}. "
-            "أجب بالعربية الواضحة، ونظم الشرح بعناوين وأمثلة. لا تخترع معلومات "
-            "أو تدّع أن المحتوى من كتاب الوزارة دون تحقق. ساعد الطالب على الفهم."
+            "أجب بالعربية الواضحة وبشكل مباشر ومنظم. ابدأ بالإجابة، واستخدم أمثلة عند الحاجة. "
+            "لا تطل بلا داعٍ، ولا تخترع معلومات أو تنسب المحتوى لكتاب الوزارة دون تحقق."
         )
         with st.chat_message("assistant"):
             with st.spinner("StudyGPT يفكر..."):
