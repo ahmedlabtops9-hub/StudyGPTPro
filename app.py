@@ -10,15 +10,15 @@ st.set_page_config(page_title="StudyGPT Pro", page_icon="🎓", layout="wide")
 MODEL = "gemini-3.8-flash"
 ENDPOINT = f"https://generativelanguage.googleapis.com/v1beta/models/{MODEL}:generateContent"
 SUBJECTS = {
-    "اللغة العربية": "معلم لغة عربية ونحو وبلاغة",
-    "اللغة الإنجليزية": "معلم لغة إنجليزية",
-    "الرياضيات": "معلم رياضيات",
-    "الفيزياء": "معلم فيزياء",
-    "الكيمياء": "معلم كيمياء",
-    "الأحياء": "معلم أحياء",
-    "التاريخ": "معلم تاريخ",
-    "الجغرافيا": "معلم جغرافيا",
-    "البرمجة والذكاء الاصطناعي": "معلم برمجة وعلوم حاسب",
+    "Arabic": "معلم لغة عربية ونحو وبلاغة",
+    "English": "معلم لغة إنجليزية",
+    "Mathematics": "معلم رياضيات",
+    "Physics": "معلم فيزياء",
+    "Chemistry": "معلم كيمياء",
+    "Biology": "معلم أحياء",
+    "History": "معلم تاريخ",
+    "Geography": "معلم جغرافيا",
+    "Programming & AI": "معلم برمجة وعلوم حاسب",
 }
 
 st.session_state.setdefault("theme_mode", "Light")
@@ -338,13 +338,17 @@ def init_state():
 
 init_state()
 
-for subject_name in SUBJECTS:\n    st.session_state.activity.setdefault(subject_name, 0)\n\nif get_user_email() and not st.session_state.get("_cloud_loaded", False):
+for subject_name in SUBJECTS:
+    st.session_state.activity.setdefault(subject_name, 0)
+
+if get_user_email() and not st.session_state.get("_cloud_loaded", False):
     restore_cloud_progress()
     st.session_state["_cloud_loaded"] = True
 
 with st.sidebar:
     st.markdown("## StudyGPT Pro")
-    st.caption("Your AI learning workspace")
+    st.caption("AI learning workspace")
+    st.caption("A flexible platform — more study stages can be added over time.")
 
     signed_email = get_user_email()
     if signed_email:
@@ -359,17 +363,19 @@ with st.sidebar:
             except Exception:
                 st.error("Google sign-in is not configured in Streamlit Secrets yet.")
 
-    grade = st.selectbox("المرحلة الدراسية", [
-        "الصف الأول الإعدادي", "الصف الثاني الإعدادي", "الصف الثالث الإعدادي",
-        "الصف الأول الثانوي", "الصف الثاني الثانوي", "الصف الثالث الثانوي",
-        "البكالوريا المصرية"
+    grade = st.selectbox("Study level", [
+        "Egyptian Baccalaureate — Year 1", "Egyptian Baccalaureate — Year 2",
+        "Secondary Year 1", "Secondary Year 2", "Secondary Year 3",
+        "Preparatory Year 1", "Preparatory Year 2", "Preparatory Year 3",
+        "Primary — Coming later"
     ])
     subject = st.selectbox("Subject", list(SUBJECTS))
-    language = st.selectbox("لغة الشرح", [
-        "العربية المصرية", "العربية الفصحى", "English"
+    language = st.selectbox("Reply language", [
+        "Auto-detect", "Arabic (Egyptian)", "Arabic (Modern Standard)", "English",
+        "German", "French", "Italian", "Japanese", "Spanish", "Chinese", "Turkish", "Portuguese"
     ])
-    style = st.selectbox("أسلوب الشرح", [
-        "شرح مبسط خطوة بخطوة", "شرح تفصيلي", "ملخص في نقاط", "أمثلة وتطبيقات"
+    style = st.selectbox("Teaching style", [
+        "Simple step-by-step", "Detailed explanation", "Bullet-point summary", "Examples and practice"
     ])
     st.divider()
     left, right = st.columns(2)
@@ -380,7 +386,7 @@ with st.sidebar:
         st.rerun()
     if st.session_state.messages:
         transcript = "\n\n".join(
-            ("الطالب: " if m["role"] == "user" else "StudyGPT: ") + m["content"]
+            ("You: " if m["role"] == "user" else "StudyGPT: ") + m["content"]
             for m in st.session_state.messages
         )
         st.download_button("Export conversation", transcript, "StudyGPT.txt", use_container_width=True)
@@ -389,14 +395,14 @@ with st.sidebar:
 
 st.markdown("""
 <div class="hero">
-<div style="color:#ffffff;font-weight:800">SMART LEARNING • MADE FOR STUDENTS</div>
+<div style="color:var(--muted);font-weight:700;letter-spacing:.08em">YOUR PERSONAL AI LEARNING SPACE</div>
 <h1>StudyGPT Pro</h1>
-<p>افهم دروسك، تدرب على الامتحانات، وتابع تقدمك في مكان واحد.</p>
+<p>Learn, practice, and track your progress in one workspace.</p>
 </div>
 """, unsafe_allow_html=True)
 
 tutor, exams, bank, flashcards, analytics = st.tabs([
-    "💬 المعلم الذكي", "📝 محاكي الامتحانات", "📚 بنك أسئلة المنهج", "🧠 البطاقات الذكية", "📊 تحليل الأداء"
+    "💬 AI Tutor", "📝 Practice Exams", "📚 Question Bank", "🧠 Flashcards", "📊 Progress"
 ])
 
 if tutor:
@@ -465,7 +471,7 @@ if tutor:
 if exams:
     st.subheader("Create a practice exam")
     with st.form("exam_setup"):
-        topic = st.text_input("Lesson or unit", placeholder="مثال: قوانين نيوتن أو النحو")
+        topic = st.text_input("Lesson or unit", placeholder="e.g. Newton’s laws or grammar")
         level = st.selectbox("Difficulty", ["Easy", "Intermediate", "Advanced"])
         count = st.selectbox("Number of questions", [5, 10, 15])
         create = st.form_submit_button("Generate exam", use_container_width=True)
@@ -508,10 +514,10 @@ if exams:
                     "اختر الإجابة", question["options"], index=None,
                     key=f"answer_{i}_{exam['topic']}", label_visibility="collapsed"
                 ))
-            submitted = st.form_submit_button("تصحيح الامتحان", use_container_width=True)
+            submitted = st.form_submit_button("Submit exam", use_container_width=True)
         if submitted:
             if any(answer is None for answer in chosen):
-                st.warning("أجب عن جميع الأسئلة قبل التصحيح.")
+                st.warning("Answer every question before submitting.")
             else:
                 correct = sum(
                     chosen[i] == question["options"][question["answer_index"]]
@@ -545,8 +551,8 @@ if bank:
     st.caption(f"{grade} • {subject} — Build practice around a unit and lesson")
     st.info("Questions are AI-generated practice, not official ministry questions. Upload your lesson pages or PDF when you need practice grounded in a specific source.")
     with st.form("curriculum_bank_setup"):
-        unit_name = st.text_input("Unit", placeholder="مثال: الوحدة الأولى")
-        lesson_name = st.text_input("Lesson", placeholder="اكتب اسم الدرس")
+        unit_name = st.text_input("Unit", placeholder="e.g. Unit 1")
+        lesson_name = st.text_input("Lesson", placeholder="Enter lesson name")
         bank_level = st.selectbox("Question difficulty", ["Easy", "Intermediate", "Advanced"])
         bank_count = st.selectbox("Number of questions", [5, 10, 15])
         source_file = st.file_uploader(
@@ -558,7 +564,7 @@ if bank:
         build_bank = st.form_submit_button("Generate lesson questions", use_container_width=True)
     if build_bank:
         if not unit_name.strip() or not lesson_name.strip():
-            st.warning("اكتب اسم الوحدة والدرس أولًا.")
+            st.warning("Enter the unit and lesson first.")
         else:
             bank_prompt = (
                 f"أنشئ {bank_count} سؤال اختيار من متعدد باللغة العربية لطلاب {grade} "
@@ -616,7 +622,7 @@ if bank:
                     key=f"bank_answer_{idx}_{bank_data['lesson']}",
                     label_visibility="collapsed",
                 ))
-            bank_submit = st.form_submit_button("تصحيح الإجابات", use_container_width=True)
+            bank_submit = st.form_submit_button("Submit answers", use_container_width=True)
         if bank_submit:
             if any(answer is None for answer in bank_answers):
                 st.warning("أجب عن جميع الأسئلة قبل التصحيح.")
@@ -645,7 +651,7 @@ if bank:
                 else:
                     st.error(f"السؤال {idx + 1}: الإجابة الصحيحة هي {correct_answer}")
                 st.write(question.get("explanation", ""))
-        if st.button("إنشاء مجموعة أسئلة جديدة", key="new_bank_questions"):
+        if st.button("Create a new question set", key="new_bank_questions"):
             st.session_state.bank_questions = None
             st.session_state.bank_result = None
             st.rerun()
@@ -659,7 +665,7 @@ if flashcards:
         make_cards = st.form_submit_button("Generate flashcards", use_container_width=True)
     if make_cards:
         if not card_topic.strip():
-            st.warning("اكتب موضوع البطاقات.")
+            st.warning("Enter a flashcard topic.")
         else:
             prompt = (
                 f"أنشئ {card_count} بطاقات مراجعة بالعربية في {subject} لطلاب {grade} "
@@ -682,7 +688,7 @@ if flashcards:
         index = st.session_state.card_index
         card = cards[index]
         st.progress((index + 1) / len(cards), text=f"بطاقة {index + 1} من {len(cards)}")
-        label = "الإجابة" if st.session_state.card_flipped else "السؤال"
+        label = "Answer" if st.session_state.card_flipped else "Question"
         visible = card["back"] if st.session_state.card_flipped else card["front"]
         st.markdown(
             f'<div class="hero" style="text-align:center;min-height:170px">'
@@ -693,11 +699,11 @@ if flashcards:
         if flip.button("اقلب البطاقة", use_container_width=True):
             st.session_state.card_flipped = not st.session_state.card_flipped
             st.rerun()
-        if previous.button("السابقة", disabled=index == 0, use_container_width=True):
+        if previous.button("Previous", disabled=index == 0, use_container_width=True):
             st.session_state.card_index -= 1
             st.session_state.card_flipped = False
             st.rerun()
-        if following.button("التالية", disabled=index == len(cards) - 1, use_container_width=True):
+        if following.button("Next", disabled=index == len(cards) - 1, use_container_width=True):
             st.session_state.card_index += 1
             st.session_state.card_flipped = False
             st.rerun()
@@ -708,20 +714,20 @@ if analytics:
     average = round(sum(x["score"] for x in history) / len(history)) if history else 0
     best = max((x["score"] for x in history), default=0)
     a, b, c = st.columns(3)
-    a.metric("الأسئلة", st.session_state.question_count)
-    b.metric("الامتحانات", len(history))
-    c.metric("متوسط الدرجات", f"{average}%")
+    a.metric("Questions", st.session_state.question_count)
+    b.metric("Exams", len(history))
+    c.metric("Average score", f"{average}%")
     st.divider()
     st.markdown("#### Study activity by subject")
     st.bar_chart(st.session_state.activity)
     st.markdown("#### Exam history")
     if history:
         st.dataframe(
-            [{"المادة": x["subject"], "الموضوع": x["topic"],
-              "الدرجة": f"{x['score']}%", "عدد الأسئلة": x["total"]} for x in reversed(history)],
+            [{"Subject": x["subject"], "Topic": x["topic"],
+              "Score": f"{x['score']}%", "Questions": x["total"]} for x in reversed(history)],
             use_container_width=True, hide_index=True
         )
-        st.metric("أعلى نتيجة", f"{best}%")
+        st.metric("Best score", f"{best}%")
     else:
         st.info("Your results will appear here after your first exam.")
 
