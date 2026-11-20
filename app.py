@@ -52,6 +52,21 @@ html,body,[class*="css"]{font-family:'Cairo',sans-serif;color:#000}
 .stTextInput input,.stTextArea textarea{background:#fff!important;color:#000!important;-webkit-text-fill-color:#000!important;border-color:#bbb!important;border-radius:10px!important}
 .stSelectbox [data-baseweb="select"]>div{background:#fff;color:#000;border-color:#bbb;border-radius:10px}
 .stRadio label,.stCheckbox label{color:#000!important}
+
+/* Ensure readable contrast: black text on white surfaces, white text on dark buttons */
+.stButton>button,.stDownloadButton>button,[data-testid="stFormSubmitButton"] button,
+.stButton>button *, .stDownloadButton>button *, [data-testid="stFormSubmitButton"] button *{
+  color:#fff!important;-webkit-text-fill-color:#fff!important;
+}
+[data-testid="stSidebar"] .stButton>button,
+[data-testid="stSidebar"] .stButton>button *{
+  color:#fff!important;-webkit-text-fill-color:#fff!important;
+}
+[data-testid="stSidebar"] [data-baseweb="select"] *,
+[data-testid="stSidebar"] label,
+[data-testid="stSidebar"] p,
+[data-testid="stSidebar"] span:not(button span){color:#000!important}
+
 hr{border-color:#e5e5e5}
 [data-testid="stAlert"]{border-radius:12px;color:#000}
 @media(max-width:700px){.block-container{padding:1rem 1rem 2rem}.hero{padding:22px}.hero h1{font-size:30px}}
