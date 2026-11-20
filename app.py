@@ -85,81 +85,67 @@ def gemini(contents, system_instruction, json_mode=False):
     key = api_key()
     if not key:
         raise RuntimeError("مفتاح Gemini غير مضبوط. أضف GEMINI_API_KEY في Streamlit Secrets.")
-    config = {"temperature": 0.45, "maxOutputTokens": 2048}
+
+    config = {"temperature": 0.4, "maxOutputTokens": 1200}
     if json_mode:
         config["responseMimeType"] = "application/json"
+
     payload = {
         "system_instruction": {"parts": [{"text": system_instruction}]},
         "contents": contents,
         "generationConfig": config,
     }
     headers = {"x-goog-api-key": key, "Content-Type": "application/json"}
-    response = None
-    active_model = MODEL
-    model_candidates = [MODEL, "gemini-3.5-flash-lite"]
+
+    # Start with the low-latency model; use the stronger Flash model only as fallback.
+    model_candidates = ["gemini-3.5-flash-lite", "gemini-3.8-flash"]
     last_error = None
 
-    for model_index, model_name in enumerate(model_candidates):
+    for model_name in model_candidates:
         endpoint = f"https://generativelanguage.googleapis.com/v1beta/models/{model_name}:generateContent"
-        for attempt in range(2):
-            try:
-                response = requests.post(
-                    endpoint,
-                    headers=headers,
-                    json=payload,
-                    timeout=75,
-                )
-            except requests.RequestException as error:
-                last_error = error
-                if attempt == 0:
-                    time.sleep(2)
-                    continue
-                break
-
-            if response.status_code == 200:
-                active_model = model_name
-                break
-
-            if response.status_code == 503 and attempt == 0:
-                time.sleep(3)
-                continue
-
-            last_error = response
-            break
-
-        if response is not None and response.status_code == 200:
-            break
-
-        if model_index == 0 and response is not None and response.status_code == 503:
-            response = None
+        try:
+            response = requests.post(
+                endpoint,
+                headers=headers,
+                json=payload,
+                timeout=35,
+            )
+        except requests.RequestException as error:
+            last_error = error
             continue
-        break
 
-    if response is None:
-        raise RuntimeError(
-            "تعذر الاتصال بخدمة Gemini. تحقق من الإنترنت ومفتاح API ثم حاول لاحقًا."
-        ) from (last_error if isinstance(last_error, Exception) else None)
+        if response.status_code == 200:
+            data = response.json()
+            candidates = data.get("candidates", [])
+            if not candidates:
+                raise RuntimeError("وصل رد فارغ من Gemini. جرّب صياغة السؤال مرة أخرى.")
+            parts = candidates[0].get("content", {}).get("parts", [])
+            answer = "\\n".join(part.get("text", "") for part in parts if part.get("text"))
+            if not answer.strip():
+                raise RuntimeError("النموذج لم يُرجع نصًا. جرّب سؤالًا أوضح.")
+            return answer.strip()
 
-    if response.status_code != 200:
+        last_error = response
+        # Move to the fallback immediately on temporary overload; do not wait through
+        # multiple long retries that make the student wait.
+        if response.status_code in (429, 500, 502, 503, 504):
+            continue
+
         try:
             message = response.json().get("error", {}).get("message", response.text)
         except ValueError:
             message = response.text
-        if response.status_code == 503:
-            raise RuntimeError(
-                "Gemini 3.8 والنموذج البديل مشغولان حاليًا. أعد المحاولة بعد قليل؛ "
-                "المشكلة من توفر الخدمة وليست من صياغة سؤالك."
-            )
         raise RuntimeError(f"Gemini API ({response.status_code}): {message}")
-    data = response.json()
-    candidates = data.get("candidates", [])
-    if not candidates:
-        raise RuntimeError("Gemini لم يرجع إجابة. حاول مرة أخرى.")
-    parts = candidates[0].get("content", {}).get("parts", [])
-    text = "".join(part.get("text", "") for part in parts).strip()
-    if not text:
-        raise RuntimeError("وصل رد فارغ من Gemini.")
-    return text
+
+    if isinstance(last_error, requests.Response):
+        if last_error.status_code in (429, 500, 502, 503, 504):
+            raise RuntimeError(
+                "خدمة Gemini مشغولة حاليًا. جرّب بعد دقيقة؛ قلّلنا وقت الانتظار لكن توفر الخدمة خارج تحكم التطبيق."
+            )
+        raise RuntimeError(f"تعذر الاتصال بـ Gemini: {last_error.text[:300]}")
+    raise RuntimeError(
+        "الاتصال بـ Gemini استغرق وقتًا أطول من المتوقع. تحقق من الاتصال وحاول مرة أخرى."
+    )
 
 def parse_json(prompt):
     raw = gemini(
@@ -321,7 +307,7 @@ with tutor:
     typed = st.chat_input(f"اكتب سؤالك في {subject}...")
     prompt = quick or typed
     if prompt:
-        history = list(st.session_state.messages[-6:])
+        history = list(st.session_state.messages[-4:])
         st.session_state.messages.append({"role": "user", "content": prompt})
         st.session_state.question_count += 1
         st.session_state.activity[subject] += 1
