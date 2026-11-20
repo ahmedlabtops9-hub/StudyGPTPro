@@ -38,8 +38,9 @@ html,body,[class*="css"]{font-family:'Cairo',sans-serif;color:#000}
 .hero h1,.hero p{color:#000}
 .hero h1{font-size:clamp(30px,4vw,42px);font-weight:900;margin:5px 0;letter-spacing:-.6px}
 .hero p{font-size:16px;margin-bottom:0}
-.stButton>button,.stDownloadButton>button,[data-testid="stFormSubmitButton"] button{border-radius:11px;background:#111;color:#fff;border:1px solid #111;font-weight:700;min-height:44px;transition:all .18s ease}
-.stButton>button:hover,.stDownloadButton>button:hover,[data-testid="stFormSubmitButton"] button:hover{background:#333;border-color:#333;color:#fff}
+.stButton>button,.stDownloadButton>button,[data-testid="stFormSubmitButton"] button{border-radius:11px;background:#fff!important;color:#000!important;border:1px solid #111!important;font-weight:700;min-height:44px;transition:all .18s ease}
+.stButton>button *, .stDownloadButton>button *, [data-testid="stFormSubmitButton"] button *{color:#000!important;-webkit-text-fill-color:#000!important}
+.stButton>button:hover,.stDownloadButton>button:hover,[data-testid="stFormSubmitButton"] button:hover{background:#ededed!important;border-color:#000!important;color:#000!important}
 [data-testid="stMetric"]{background:#fff;border:1px solid #dedede;padding:15px;border-radius:14px;box-shadow:0 4px 16px rgba(0,0,0,.035)}
 [data-testid="stMetricLabel"],[data-testid="stMetricValue"]{color:#000!important}
 [data-testid="stTabs"] button{font-family:'Cairo',sans-serif;font-weight:700;color:#000!important}
