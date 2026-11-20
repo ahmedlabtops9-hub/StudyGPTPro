@@ -24,52 +24,39 @@ st.markdown("""
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&display=swap');
 :root{color-scheme:light}
-html,body,[class*="css"]{font-family:'Cairo',sans-serif;color:#000}
-.stApp,[data-testid="stAppViewContainer"]{background:#fff;color:#000}
+html,body,[class*="css"]{font-family:'Cairo',sans-serif;color:#111}
+.stApp,[data-testid="stAppViewContainer"]{background:#fff;color:#111}
 [data-testid="stHeader"]{background:rgba(255,255,255,.97)}
 .block-container{max-width:1180px;padding-top:2rem;padding-bottom:3rem}
-[data-testid="stSidebar"]{background:#fff;border-right:1px solid #ddd}
-[data-testid="stSidebar"] *{color:#000!important}
-[data-testid="stSidebar"] [data-baseweb="select"]>div{background:#fff;border-color:#bbb;color:#000}
-[data-testid="stMarkdownContainer"],[data-testid="stChatMessageContent"]{direction:rtl;text-align:right;color:#000!important}
-[data-testid="stMarkdownContainer"] *,[data-testid="stChatMessageContent"] *{color:#000}
-[data-testid="stMarkdownContainer"] p,[data-testid="stMarkdownContainer"] li{line-height:1.9;color:#000}
-.hero{padding:30px 34px;border-radius:20px;margin:4px 0 24px;background:#fff;border:1px solid #222;box-shadow:0 10px 28px rgba(0,0,0,.07);color:#000}
-.hero h1,.hero p{color:#000}
+[data-testid="stSidebar"]{background:#111;border-right:1px solid #333}
+[data-testid="stSidebar"] *{color:#fff!important}
+[data-testid="stSidebar"] [data-baseweb="select"]>div{background:#fff;border-color:#bbb;color:#111}
+[data-testid="stSidebar"] [data-baseweb="select"] *{color:#111!important}
+[data-testid="stMarkdownContainer"],[data-testid="stChatMessageContent"]{direction:rtl;text-align:right;color:#111}
+[data-testid="stMarkdownContainer"] p,[data-testid="stMarkdownContainer"] li{line-height:1.9;color:#111}
+.hero{padding:30px 34px;border-radius:20px;margin:4px 0 24px;background:#111;border:1px solid #111;box-shadow:0 10px 28px rgba(0,0,0,.12);color:#fff}
+.hero h1,.hero p{color:#fff}
 .hero h1{font-size:clamp(30px,4vw,42px);font-weight:900;margin:5px 0;letter-spacing:-.6px}
 .hero p{font-size:16px;margin-bottom:0}
-.stButton>button,.stDownloadButton>button,[data-testid="stFormSubmitButton"] button{border-radius:11px;background:#fff!important;color:#000!important;border:1px solid #111!important;font-weight:700;min-height:44px;transition:all .18s ease}
-.stButton>button *, .stDownloadButton>button *, [data-testid="stFormSubmitButton"] button *{color:#000!important;-webkit-text-fill-color:#000!important}
-.stButton>button:hover,.stDownloadButton>button:hover,[data-testid="stFormSubmitButton"] button:hover{background:#ededed!important;border-color:#000!important;color:#000!important}
-[data-testid="stMetric"]{background:#fff;border:1px solid #dedede;padding:15px;border-radius:14px;box-shadow:0 4px 16px rgba(0,0,0,.035)}
-[data-testid="stMetricLabel"],[data-testid="stMetricValue"]{color:#000!important}
-[data-testid="stTabs"] button{font-family:'Cairo',sans-serif;font-weight:700;color:#000!important}
-[data-testid="stTabs"] button[aria-selected="true"]{color:#000!important;border-bottom-color:#000}
-[data-testid="stChatMessage"]{background:#fff;border:1px solid #e5e5e5;border-radius:15px;padding:14px 18px;margin:10px 0;box-shadow:0 3px 12px rgba(0,0,0,.03)}
+.stButton>button,.stDownloadButton>button,[data-testid="stFormSubmitButton"] button{border-radius:11px;background:#111!important;color:#fff!important;border:1px solid #111!important;font-weight:700;min-height:44px;transition:all .18s ease}
+.stButton>button *, .stDownloadButton>button *, [data-testid="stFormSubmitButton"] button *{color:#fff!important;-webkit-text-fill-color:#fff!important}
+.stButton>button:hover,.stDownloadButton>button:hover,[data-testid="stFormSubmitButton"] button:hover{background:#333!important;border-color:#333!important;color:#fff!important}
+[data-testid="stMetric"]{background:#111;border:1px solid #111;padding:15px;border-radius:14px;box-shadow:0 4px 16px rgba(0,0,0,.08)}
+[data-testid="stMetricLabel"],[data-testid="stMetricValue"]{color:#fff!important}
+[data-testid="stMetric"] *{color:#fff!important}
+[data-testid="stTabs"] button{font-family:'Cairo',sans-serif;font-weight:700;color:#111!important}
+[data-testid="stTabs"] button[aria-selected="true"]{color:#111!important;border-bottom-color:#111}
+[data-testid="stChatMessage"]{background:#111;border:1px solid #111;border-radius:15px;padding:14px 18px;margin:10px 0;box-shadow:0 3px 12px rgba(0,0,0,.06)}
+[data-testid="stChatMessage"] *{color:#fff!important}
 [data-testid="stChatInput"]{background:#fff;border:1px solid #cfcfcf;border-radius:14px;box-shadow:0 6px 20px rgba(0,0,0,.05)}
-[data-testid="stChatInput"] textarea,[data-testid="stChatInput"] textarea:focus{background:#fff!important;color:#000!important;-webkit-text-fill-color:#000!important;caret-color:#000!important;opacity:1!important}
+[data-testid="stChatInput"] textarea,[data-testid="stChatInput"] textarea:focus{background:#fff!important;color:#111!important;-webkit-text-fill-color:#111!important;caret-color:#111!important;opacity:1!important}
 [data-testid="stChatInput"] textarea::placeholder{color:#666!important;-webkit-text-fill-color:#666!important;opacity:1!important}
-[data-testid="stChatInput"] button{color:#000!important}
-.stTextInput input,.stTextArea textarea{background:#fff!important;color:#000!important;-webkit-text-fill-color:#000!important;border-color:#bbb!important;border-radius:10px!important}
-.stSelectbox [data-baseweb="select"]>div{background:#fff;color:#000;border-color:#bbb;border-radius:10px}
-.stRadio label,.stCheckbox label{color:#000!important}
-
-/* Ensure readable contrast: black text on white surfaces, white text on dark buttons */
-.stButton>button,.stDownloadButton>button,[data-testid="stFormSubmitButton"] button,
-.stButton>button *, .stDownloadButton>button *, [data-testid="stFormSubmitButton"] button *{
-  color:#fff!important;-webkit-text-fill-color:#fff!important;
-}
-[data-testid="stSidebar"] .stButton>button,
-[data-testid="stSidebar"] .stButton>button *{
-  color:#fff!important;-webkit-text-fill-color:#fff!important;
-}
-[data-testid="stSidebar"] [data-baseweb="select"] *,
-[data-testid="stSidebar"] label,
-[data-testid="stSidebar"] p,
-[data-testid="stSidebar"] span:not(button span){color:#000!important}
-
+[data-testid="stChatInput"] button{color:#111!important}
+.stTextInput input,.stTextArea textarea{background:#fff!important;color:#111!important;-webkit-text-fill-color:#111!important;border-color:#bbb!important;border-radius:10px!important}
+.stSelectbox [data-baseweb="select"]>div{background:#fff;color:#111;border-color:#bbb;border-radius:10px}
+.stRadio label,.stCheckbox label{color:#111!important}
 hr{border-color:#e5e5e5}
-[data-testid="stAlert"]{border-radius:12px;color:#000}
+[data-testid="stAlert"]{border-radius:12px;color:#111}
 @media(max-width:700px){.block-container{padding:1rem 1rem 2rem}.hero{padding:22px}.hero h1{font-size:30px}}
 </style>
 """, unsafe_allow_html=True)
