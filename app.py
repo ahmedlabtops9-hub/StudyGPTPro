@@ -447,7 +447,7 @@ def restore_cloud_progress():
         if response.status_code == 200 and response.json():
             saved = response.json()[0].get("data", {})
             for name in ("messages", "question_count", "exam_history", "exam_data",
-                         "exam_result", "cards", "card_index", "card_flipped", "activity"):
+                         "exam_result", "bank_questions", "bank_result", "cards", "card_index", "card_flipped", "activity"):
                 if name in saved:
                     st.session_state[name] = saved[name]
             return True
@@ -462,7 +462,7 @@ def persist_cloud_progress():
         return False
     data = {name: st.session_state.get(name) for name in (
         "messages", "question_count", "exam_history", "exam_data", "exam_result",
-        "cards", "card_index", "card_flipped", "activity"
+        "bank_questions", "bank_result", "cards", "card_index", "card_flipped", "activity"
     )}
     headers = {
         "apikey": key,
@@ -484,7 +484,7 @@ def persist_cloud_progress():
 def init_state():
     defaults = {
         "messages": [], "question_count": 0, "exam_history": [],
-        "exam_data": None, "exam_result": None, "cards": [],
+        "exam_data": None, "exam_result": None, "bank_questions": None, "bank_result": None, "cards": [],
         "card_index": 0, "card_flipped": False,
         "activity": {name: 0 for name in SUBJECTS},
     }
@@ -551,8 +551,8 @@ st.markdown("""
 </div>
 """, unsafe_allow_html=True)
 
-tutor, exams, flashcards, analytics = st.tabs([
-    "💬 المعلم الذكي", "📝 محاكي الامتحانات", "🧠 البطاقات الذكية", "📊 تحليل الأداء"
+tutor, exams, bank, flashcards, analytics = st.tabs([
+    "💬 المعلم الذكي", "📝 محاكي الامتحانات", "📚 بنك أسئلة المنهج", "🧠 البطاقات الذكية", "📊 تحليل الأداء"
 ])
 
 with tutor:
@@ -694,6 +694,118 @@ with exams:
                 st.session_state.exam_data = None
                 st.session_state.exam_result = None
                 st.rerun()
+
+
+with bank:
+    st.subheader("بنك أسئلة المنهج")
+    st.caption(f"{grade} • {subject} — أنشئ تدريبًا مرتبطًا بالوحدة والدرس")
+    st.info("الأسئلة هنا تدريبية مولّدة بالذكاء الاصطناعي وليست أسئلة وزارة معتمدة. للحصول على أسئلة مطابقة لمصدر دراستك، ارفع صفحات الدرس أو ملف PDF.")
+    with st.form("curriculum_bank_setup"):
+        unit_name = st.text_input("الوحدة", placeholder="مثال: الوحدة الأولى")
+        lesson_name = st.text_input("الدرس", placeholder="اكتب اسم الدرس")
+        bank_level = st.selectbox("مستوى الأسئلة", ["سهل", "متوسط", "متقدم"])
+        bank_count = st.selectbox("عدد الأسئلة", [5, 10, 15])
+        source_file = st.file_uploader(
+            "ارفع صفحات الدرس أو ملف الكتاب (اختياري)",
+            type=["pdf", "png", "jpg", "jpeg", "webp"],
+            accept_multiple_files=False,
+            key="bank_source_file",
+        )
+        build_bank = st.form_submit_button("إنشاء أسئلة الدرس", use_container_width=True)
+    if build_bank:
+        if not unit_name.strip() or not lesson_name.strip():
+            st.warning("اكتب اسم الوحدة والدرس أولًا.")
+        else:
+            bank_prompt = (
+                f"أنشئ {bank_count} سؤال اختيار من متعدد باللغة العربية لطلاب {grade} "
+                f"في مادة {subject}، الوحدة: {unit_name}، الدرس: {lesson_name}، "
+                f"بمستوى {bank_level}. "
+                "إذا أرفق الطالب مصدرًا، التزم بالمعلومات الواردة فيه فقط ولا تضف معلومات من خارجه. "
+                "إذا لم يرفق مصدرًا، أنشئ تدريبًا عامًا مناسبًا للموضوع ولا تدّعِ أنه من كتاب الوزارة. "
+                "نوّع بين الفهم والتطبيق والتذكر، وتجنب تكرار الأسئلة. "
+                "أعد JSON فقط بالشكل "
+                '{"questions":[{"question":"نص السؤال","options":["أ","ب","ج","د"],'
+                '"answer_index":0,"explanation":"سبب صحة الإجابة"}]}. '
+                "answer_index عدد صحيح من صفر إلى ثلاثة."
+            )
+            try:
+                user_parts = [{"text": bank_prompt}]
+                if source_file is not None:
+                    source_bytes = source_file.getvalue()
+                    if len(source_bytes) > 15 * 1024 * 1024:
+                        raise ValueError("حجم الملف أكبر من 15 ميجابايت.")
+                    user_parts.append({
+                        "inline_data": {
+                            "mime_type": source_file.type or "application/octet-stream",
+                            "data": base64.b64encode(source_bytes).decode("utf-8"),
+                        }
+                    })
+                with st.spinner("يتم إعداد أسئلة الوحدة والدرس..."):
+                    bank_data = parse_json(user_parts)
+                questions = bank_data.get("questions", [])
+                if not questions:
+                    raise ValueError("لم يتم إنشاء أسئلة صالحة.")
+                for question in questions:
+                    if (not isinstance(question.get("question"), str)
+                        or len(question.get("options", [])) != 4
+                        or question.get("answer_index") not in [0, 1, 2, 3]):
+                        raise ValueError("وصل سؤال بتنسيق غير صحيح. حاول مرة أخرى.")
+                st.session_state.bank_questions = {
+                    "grade": grade, "subject": subject, "unit": unit_name,
+                    "lesson": lesson_name, "questions": questions,
+                }
+                st.session_state.bank_result = None
+                st.rerun()
+            except Exception as error:
+                st.error(f"تعذر إنشاء بنك الأسئلة: {error}")
+    if st.session_state.bank_questions:
+        bank_data = st.session_state.bank_questions
+        st.divider()
+        st.markdown(f"### {bank_data['unit']} — {bank_data['lesson']}")
+        st.caption(f"{bank_data['grade']} • {bank_data['subject']} • {len(bank_data['questions'])} أسئلة")
+        with st.form("curriculum_bank_answers"):
+            bank_answers = []
+            for idx, question in enumerate(bank_data["questions"]):
+                st.markdown(f"**س{idx + 1}: {question['question']}**")
+                bank_answers.append(st.radio(
+                    "اختر الإجابة", question["options"], index=None,
+                    key=f"bank_answer_{idx}_{bank_data['lesson']}",
+                    label_visibility="collapsed",
+                ))
+            bank_submit = st.form_submit_button("تصحيح الإجابات", use_container_width=True)
+        if bank_submit:
+            if any(answer is None for answer in bank_answers):
+                st.warning("أجب عن جميع الأسئلة قبل التصحيح.")
+            else:
+                correct_count = sum(
+                    bank_answers[idx] == question["options"][question["answer_index"]]
+                    for idx, question in enumerate(bank_data["questions"])
+                )
+                bank_score = round(correct_count / len(bank_data["questions"]) * 100)
+                st.session_state.bank_result = {
+                    "answers": bank_answers, "correct": correct_count, "score": bank_score,
+                }
+                st.session_state.exam_history.append({
+                    "subject": bank_data["subject"],
+                    "topic": f"{bank_data['unit']} - {bank_data['lesson']}",
+                    "score": bank_score, "total": len(bank_data["questions"]),
+                })
+                st.rerun()
+        if st.session_state.bank_result:
+            result = st.session_state.bank_result
+            st.success(f"نتيجتك: {result['correct']} من {len(bank_data['questions'])} — {result['score']}%")
+            for idx, question in enumerate(bank_data["questions"]):
+                correct_answer = question["options"][question["answer_index"]]
+                if result["answers"][idx] == correct_answer:
+                    st.success(f"السؤال {idx + 1}: إجابة صحيحة")
+                else:
+                    st.error(f"السؤال {idx + 1}: الإجابة الصحيحة هي {correct_answer}")
+                st.write(question.get("explanation", ""))
+        if st.button("إنشاء مجموعة أسئلة جديدة", key="new_bank_questions"):
+            st.session_state.bank_questions = None
+            st.session_state.bank_result = None
+            st.rerun()
+
 
 with flashcards:
     st.subheader("البطاقات الذكية")
