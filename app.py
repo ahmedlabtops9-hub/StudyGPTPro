@@ -86,7 +86,7 @@ def gemini(contents, system_instruction, json_mode=False):
     if not key:
         raise RuntimeError("مفتاح Gemini غير مضبوط. أضف GEMINI_API_KEY في Streamlit Secrets.")
 
-    config = {"temperature": 0.4, "maxOutputTokens": 1200}
+    config = {"temperature": 0.4, "maxOutputTokens": 900}
     if json_mode:
         config["responseMimeType"] = "application/json"
 
@@ -108,7 +108,7 @@ def gemini(contents, system_instruction, json_mode=False):
                 endpoint,
                 headers=headers,
                 json=payload,
-                timeout=35,
+                timeout=20,
             )
         except requests.RequestException as error:
             last_error = error
@@ -120,7 +120,7 @@ def gemini(contents, system_instruction, json_mode=False):
             if not candidates:
                 raise RuntimeError("وصل رد فارغ من Gemini. جرّب صياغة السؤال مرة أخرى.")
             parts = candidates[0].get("content", {}).get("parts", [])
-            answer = "\\n".join(part.get("text", "") for part in parts if part.get("text"))
+            answer = "\n".join(part.get("text", "") for part in parts if part.get("text"))
             if not answer.strip():
                 raise RuntimeError("النموذج لم يُرجع نصًا. جرّب سؤالًا أوضح.")
             return answer.strip()
