@@ -215,12 +215,7 @@ def persist_cloud_progress():
     except requests.RequestException:
         return False
 
-def init_state()
-
-if get_user_email() and not st.session_state.get("_cloud_loaded", False):
-    restore_cloud_progress()
-    st.session_state["_cloud_loaded"] = True
-:
+def init_state():
     defaults = {
         "messages": [], "question_count": 0, "exam_history": [],
         "exam_data": None, "exam_result": None, "cards": [],
@@ -232,6 +227,10 @@ if get_user_email() and not st.session_state.get("_cloud_loaded", False):
             st.session_state[key] = value
 
 init_state()
+
+if get_user_email() and not st.session_state.get("_cloud_loaded", False):
+    restore_cloud_progress()
+    st.session_state["_cloud_loaded"] = True
 
 with st.sidebar:
     st.markdown("## 🎓 StudyGPT Pro")
