@@ -63,6 +63,149 @@ html,body,[class*="css"]{font-family:'Cairo',sans-serif;color:#f4f7fc}
 [data-testid="stDataFrame"],[data-testid="stTable"]{background:#142944}
 [data-testid="stAlert"]{border-radius:12px}
 hr{border-color:#294362}
+/* Reliable contrast overrides for Streamlit widgets */
+[data-testid="stSidebar"] [data-testid="stSelectbox"],
+[data-testid="stSidebar"] [data-testid="stSelectbox"] *,
+[data-testid="stSidebar"] .stSelectbox,
+[data-testid="stSidebar"] .stSelectbox *{
+  color:#f4f7fc!important;
+}
+[data-testid="stSelectbox"] [data-baseweb="select"],
+[data-testid="stSelectbox"] [data-baseweb="select"] > div,
+[data-testid="stSidebar"] [data-baseweb="select"],
+[data-testid="stSidebar"] [data-baseweb="select"] > div,
+.stSelectbox [data-baseweb="select"] > div{
+  background:#172943!important;
+  color:#fff!important;
+  border-color:#6485ad!important;
+}
+[data-testid="stSelectbox"] [data-baseweb="select"] *,
+[data-testid="stSidebar"] [data-baseweb="select"] *,
+.stSelectbox [data-baseweb="select"] *{
+  color:#fff!important;
+  -webkit-text-fill-color:#fff!important;
+}
+[data-baseweb="popover"] [role="listbox"],
+[data-baseweb="popover"] [role="option"],
+[data-baseweb="menu"],
+[data-baseweb="menu"] *{
+  background:#142944!important;
+  color:#fff!important;
+  -webkit-text-fill-color:#fff!important;
+}
+[data-baseweb="popover"] [role="option"]:hover,
+[data-baseweb="popover"] [aria-selected="true"]{
+  background:#28527d!important;
+  color:#fff!important;
+}
+[data-testid="stFileUploader"],
+[data-testid="stFileUploader"] section,
+[data-testid="stFileUploader"] [data-testid="stFileUploaderDropzone"],
+[data-testid="stFileUploader"] [data-testid="stFileUploaderDropzone"] > div{
+  background:#142944!important;
+  color:#fff!important;
+  border-color:#6485ad!important;
+}
+[data-testid="stFileUploader"] *,
+[data-testid="stFileUploader"] button *{
+  color:#fff!important;
+  -webkit-text-fill-color:#fff!important;
+}
+[data-testid="stChatInput"],
+[data-testid="stChatInput"] > div,
+[data-testid="stChatInput"] textarea{
+  background:#172943!important;
+  color:#fff!important;
+  -webkit-text-fill-color:#fff!important;
+}
+[data-testid="stTextInput"] input,
+[data-testid="stTextArea"] textarea,
+[data-testid="stNumberInput"] input{
+  background:#172943!important;
+  color:#fff!important;
+  -webkit-text-fill-color:#fff!important;
+  border-color:#6485ad!important;
+}
+[data-testid="stTextInput"] input::placeholder,
+[data-testid="stTextArea"] textarea::placeholder,
+[data-testid="stChatInput"] textarea::placeholder{
+  color:#c6d5e8!important;
+  -webkit-text-fill-color:#c6d5e8!important;
+  opacity:1!important;
+}
+[data-testid="stWidgetLabel"],
+[data-testid="stWidgetLabel"] *,
+[data-testid="stCaptionContainer"]{
+  color:#d5e2f2!important;
+}
+[data-testid="stRadio"] label,
+[data-testid="stCheckbox"] label{
+  color:#f4f7fc!important;
+}
+on
+import os
+import streamlit as st
+import requests
+import time
+
+st.set_page_config(page_title="StudyGPT Pro", page_icon="🎓", layout="wide")
+
+MODEL = "gemini-3.8-flash"
+ENDPOINT = f"https://generativelanguage.googleapis.com/v1beta/models/{MODEL}:generateContent"
+SUBJECTS = {
+    "اللغة العربية": "معلم لغة عربية ونحو وبلاغة",
+    "اللغة الإنجليزية": "معلم لغة إنجليزية",
+    "الرياضيات": "معلم رياضيات",
+    "الفيزياء": "معلم فيزياء",
+    "الكيمياء": "معلم كيمياء",
+    "الأحياء": "معلم أحياء",
+    "التاريخ": "معلم تاريخ",
+    "الجغرافيا": "معلم جغرافيا",
+    "البرمجة والذكاء الاصطناعي": "معلم برمجة وعلوم حاسب",
+}
+
+st.markdown("""
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&display=swap');
+:root{color-scheme:dark}
+html,body,[class*="css"]{font-family:'Cairo',sans-serif;color:#f4f7fc}
+.stApp,[data-testid="stAppViewContainer"]{background:radial-gradient(ellipse at 82% 4%,rgba(36,105,190,.34),transparent 34%),linear-gradient(135deg,#07101e 0%,#0b1729 54%,#102747 100%);color:#f4f7fc}
+[data-testid="stHeader"]{background:rgba(7,16,30,.82)}
+.block-container{max-width:1280px;padding-top:1.7rem;padding-bottom:3rem}
+[data-testid="stSidebar"]{background:linear-gradient(180deg,#101e35 0%,#0a1425 100%);border-right:1px solid #294366}
+[data-testid="stSidebar"] *{color:#f4f7fc}
+[data-testid="stSidebar"] [data-baseweb="select"]>div{background:#172943;border:1px solid #3b567b;color:#fff}
+[data-testid="stSidebar"] [data-baseweb="select"] *{color:#fff!important}
+[data-testid="stMarkdownContainer"],[data-testid="stChatMessageContent"]{direction:rtl;text-align:right;color:#f4f7fc}
+[data-testid="stMarkdownContainer"] p,[data-testid="stMarkdownContainer"] li{line-height:1.9;color:#f4f7fc}
+.hero{padding:30px 34px;border-radius:20px;margin:4px 0 24px;background:linear-gradient(115deg,#102847 0%,#173d69 58%,#087fae 100%);border:1px solid #315b87;box-shadow:0 14px 38px rgba(0,0,0,.24);color:#fff}
+.hero h1,.hero p{color:#fff}
+.hero h1{font-size:clamp(30px,4vw,42px);font-weight:900;margin:5px 0;letter-spacing:-.6px}
+.hero p{font-size:16px;margin-bottom:0}
+.stButton>button,.stDownloadButton>button,[data-testid="stFormSubmitButton"] button{border-radius:11px;background:linear-gradient(105deg,#287cf0,#12a5ce)!important;color:#fff!important;border:1px solid #398edc!important;font-weight:700;min-height:44px;transition:all .18s ease}
+.stButton>button *, .stDownloadButton>button *, [data-testid="stFormSubmitButton"] button *{color:#fff!important;-webkit-text-fill-color:#fff!important}
+.stButton>button:hover,.stDownloadButton>button:hover,[data-testid="stFormSubmitButton"] button:hover{filter:brightness(1.12);border-color:#75c8f5!important}
+[data-testid="stMetric"]{background:linear-gradient(145deg,#142b49,#1b3557);border:1px solid #36577e;padding:15px;border-radius:14px;box-shadow:0 7px 20px rgba(0,0,0,.18)}
+[data-testid="stMetricLabel"],[data-testid="stMetricValue"],[data-testid="stMetric"] *{color:#fff!important}
+[data-testid="stTabs"]{background:transparent}
+[data-testid="stTabs"] button{font-family:'Cairo',sans-serif;font-weight:700;color:#dce8f7!important}
+[data-testid="stTabs"] button[aria-selected="true"]{color:#fff!important;border-bottom-color:#35a9f0}
+[data-testid="stChatMessage"]{background:linear-gradient(145deg,#142944,#1b3554);border:1px solid #36577e;border-radius:15px;padding:14px 18px;margin:10px 0;box-shadow:0 5px 16px rgba(0,0,0,.16)}
+[data-testid="stChatMessage"] *{color:#f4f7fc!important}
+[data-testid="stChatInput"]{background:#172943;border:1px solid #45658d;border-radius:14px;box-shadow:0 7px 22px rgba(0,0,0,.18)}
+[data-testid="stChatInput"] textarea,[data-testid="stChatInput"] textarea:focus{background:#172943!important;color:#fff!important;-webkit-text-fill-color:#fff!important;caret-color:#fff!important;opacity:1!important}
+[data-testid="stChatInput"] textarea::placeholder{color:#b9c9df!important;-webkit-text-fill-color:#b9c9df!important;opacity:1!important}
+[data-testid="stChatInput"] button{color:#fff!important}
+.stTextInput input,.stTextArea textarea{background:#172943!important;color:#fff!important;-webkit-text-fill-color:#fff!important;border-color:#45658d!important;border-radius:10px!important}
+.stTextInput input::placeholder,.stTextArea textarea::placeholder{color:#b9c9df!important;-webkit-text-fill-color:#b9c9df!important}
+.stSelectbox [data-baseweb="select"]>div{background:#172943;color:#fff;border:1px solid #45658d;border-radius:10px}
+.stSelectbox [data-baseweb="select"] *{color:#fff!important}
+.stRadio label,.stCheckbox label{color:#f4f7fc!important}
+[data-testid="stFileUploader"]{background:#142944;border:1px dashed #52749c;border-radius:12px;padding:10px}
+[data-testid="stFileUploader"] *{color:#f4f7fc!important}
+[data-testid="stDataFrame"],[data-testid="stTable"]{background:#142944}
+[data-testid="stAlert"]{border-radius:12px}
+hr{border-color:#294362}
 /* Strong contrast fixes for Streamlit/BaseWeb widgets */
 [data-testid="stSidebar"] label,
 [data-testid="stSidebar"] [data-testid="stWidgetLabel"],
