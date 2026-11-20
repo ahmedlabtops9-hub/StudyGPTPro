@@ -332,7 +332,7 @@ def gemini(contents, system_instruction, json_mode=False):
     }
     headers = {"x-goog-api-key": key, "Content-Type": "application/json"}
 
-    # Use the currently configured Gemini model only. Avoid deprecated fallback IDs.
+    # Use the configured Gemini model and retry transient upstream failures with backoff.
     model_candidates = [MODEL]
     failures = []
 
@@ -341,19 +341,20 @@ def gemini(contents, system_instruction, json_mode=False):
             f"https://generativelanguage.googleapis.com/v1beta/"
             f"models/{model_name}:generateContent"
         )
-        # Retry once only for temporary network/server or quota responses.
-        for attempt in range(2):
+        max_attempts = 4
+
+        for attempt in range(max_attempts):
             try:
                 response = requests.post(
                     endpoint,
                     headers=headers,
                     json=payload,
-                    timeout=(5, 30),
+                    timeout=(5, 45),
                 )
             except requests.RequestException as error:
                 failures.append(f"{model_name}: network error ({type(error).__name__})")
-                if attempt == 0:
-                    time.sleep(1)
+                if attempt < max_attempts - 1:
+                    time.sleep(2 ** attempt)
                     continue
                 break
 
@@ -383,17 +384,29 @@ def gemini(contents, system_instruction, json_mode=False):
                 f"{model_name}: HTTP {status} {status_name} {message[:180]}"
             )
 
-            # A 404 is a model/endpoint problem; trying obsolete model IDs cannot fix it.
-            if status in (408, 429, 500, 502, 503, 504) and attempt == 0:
-                time.sleep(1)
+            # Retry temporary service/overload errors; do not retry 404 or auth errors.
+            retryable = status in (408, 500, 502, 503, 504)
+            if retryable and attempt < max_attempts - 1:
+                retry_after = response.headers.get("Retry-After", "")
+                try:
+                    delay = min(max(float(retry_after), 1), 20) if retry_after else 2 ** attempt
+                except ValueError:
+                    delay = 2 ** attempt
+                time.sleep(delay)
                 continue
 
+            if status == 429:
+                raise RuntimeError(
+                    "Gemini API (429): تم تجاوز حد الطلبات أو الحصة المتاحة. "
+                    "انتظر قليلًا أو راجع حدود الاستخدام في Google AI Studio. "
+                    f"تفاصيل Google: {message}"
+                )
             raise RuntimeError(f"Gemini API ({status}): {message}")
 
     details = "\\n".join(failures[-4:])
     raise RuntimeError(
-        f"تعذر الحصول على رد من {MODEL} بعد إعادة المحاولة. "
-        "راجع اسم النموذج وصلاحية مفتاح Gemini وحدود الاستخدام. "
+        f"تعذر الحصول على رد من {MODEL} بعد {max_attempts} محاولات. "
+        "قد يكون هناك ضغط مؤقت على خدمة Gemini أو مشكلة اتصال. "
         "تفاصيل المحاولات:\\n" + details
     )
 
