@@ -21,293 +21,127 @@ SUBJECTS = {
     "البرمجة والذكاء الاصطناعي": "معلم برمجة وعلوم حاسب",
 }
 
-st.markdown(r'''
-<style>
-@import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&display=swap');
-:root{color-scheme:dark}
-html,body,[class*="css"]{font-family:'Cairo',sans-serif;color:#f4f7fc}
-.stApp,[data-testid="stAppViewContainer"]{background:radial-gradient(ellipse at 82% 4%,rgba(36,105,190,.34),transparent 34%),linear-gradient(135deg,#07101e 0%,#0b1729 54%,#102747 100%);color:#f4f7fc}
-[data-testid="stHeader"]{background:rgba(7,16,30,.82)}
-.block-container{max-width:1280px;padding-top:1.7rem;padding-bottom:3rem}
-[data-testid="stSidebar"]{background:linear-gradient(180deg,#101e35 0%,#0a1425 100%);border-right:1px solid #294366}
-[data-testid="stSidebar"] *{color:#f4f7fc}
-[data-testid="stSidebar"] [data-baseweb="select"]>div{background:#172943;border:1px solid #3b567b;color:#fff}
-[data-testid="stSidebar"] [data-baseweb="select"] *{color:#fff!important}
-[data-testid="stMarkdownContainer"],[data-testid="stChatMessageContent"]{direction:rtl;text-align:right;color:#f4f7fc}
-[data-testid="stMarkdownContainer"] p,[data-testid="stMarkdownContainer"] li{line-height:1.9;color:#f4f7fc}
-.hero{padding:30px 34px;border-radius:20px;margin:4px 0 24px;background:linear-gradient(115deg,#102847 0%,#173d69 58%,#087fae 100%);border:1px solid #315b87;box-shadow:0 14px 38px rgba(0,0,0,.24);color:#fff}
-.hero h1,.hero p{color:#fff}
-.hero h1{font-size:clamp(30px,4vw,42px);font-weight:900;margin:5px 0;letter-spacing:-.6px}
-.hero p{font-size:16px;margin-bottom:0}
-.stButton>button,.stDownloadButton>button,[data-testid="stFormSubmitButton"] button{border-radius:11px;background:linear-gradient(105deg,#287cf0,#12a5ce)!important;color:#fff!important;border:1px solid #398edc!important;font-weight:700;min-height:44px;transition:all .18s ease}
-.stButton>button *, .stDownloadButton>button *, [data-testid="stFormSubmitButton"] button *{color:#fff!important;-webkit-text-fill-color:#fff!important}
-.stButton>button:hover,.stDownloadButton>button:hover,[data-testid="stFormSubmitButton"] button:hover{filter:brightness(1.12);border-color:#75c8f5!important}
-[data-testid="stMetric"]{background:linear-gradient(145deg,#142b49,#1b3557);border:1px solid #36577e;padding:15px;border-radius:14px;box-shadow:0 7px 20px rgba(0,0,0,.18)}
-[data-testid="stMetricLabel"],[data-testid="stMetricValue"],[data-testid="stMetric"] *{color:#fff!important}
-[data-testid="stTabs"]{background:transparent}
-[data-testid="stTabs"] button{font-family:'Cairo',sans-serif;font-weight:700;color:#dce8f7!important}
-[data-testid="stTabs"] button[aria-selected="true"]{color:#fff!important;border-bottom-color:#35a9f0}
-[data-testid="stChatMessage"]{background:linear-gradient(145deg,#142944,#1b3554);border:1px solid #36577e;border-radius:15px;padding:14px 18px;margin:10px 0;box-shadow:0 5px 16px rgba(0,0,0,.16)}
-[data-testid="stChatMessage"] *{color:#f4f7fc!important}
-[data-testid="stChatInput"]{background:#172943;border:1px solid #45658d;border-radius:14px;box-shadow:0 7px 22px rgba(0,0,0,.18)}
-[data-testid="stChatInput"] textarea,[data-testid="stChatInput"] textarea:focus{background:#172943!important;color:#fff!important;-webkit-text-fill-color:#fff!important;caret-color:#fff!important;opacity:1!important}
-[data-testid="stChatInput"] textarea::placeholder{color:#b9c9df!important;-webkit-text-fill-color:#b9c9df!important;opacity:1!important}
-[data-testid="stChatInput"] button{color:#fff!important}
-.stTextInput input,.stTextArea textarea{background:#172943!important;color:#fff!important;-webkit-text-fill-color:#fff!important;border-color:#45658d!important;border-radius:10px!important}
-.stTextInput input::placeholder,.stTextArea textarea::placeholder{color:#b9c9df!important;-webkit-text-fill-color:#b9c9df!important}
-.stSelectbox [data-baseweb="select"]>div{background:#172943;color:#fff;border:1px solid #45658d;border-radius:10px}
-.stSelectbox [data-baseweb="select"] *{color:#fff!important}
-.stRadio label,.stCheckbox label{color:#f4f7fc!important}
-[data-testid="stFileUploader"]{background:#142944;border:1px dashed #52749c;border-radius:12px;padding:10px}
-[data-testid="stFileUploader"] *{color:#f4f7fc!important}
-[data-testid="stDataFrame"],[data-testid="stTable"]{background:#142944}
-[data-testid="stAlert"]{border-radius:12px}
-hr{border-color:#294362}
-/* Reliable contrast overrides for Streamlit widgets */
-[data-testid="stSidebar"] [data-testid="stSelectbox"],
-[data-testid="stSidebar"] [data-testid="stSelectbox"] *,
-[data-testid="stSidebar"] .stSelectbox,
-[data-testid="stSidebar"] .stSelectbox *{
-  color:#f4f7fc!important;
-}
-[data-testid="stSelectbox"] [data-baseweb="select"],
-[data-testid="stSelectbox"] [data-baseweb="select"] > div,
-[data-testid="stSidebar"] [data-baseweb="select"],
-[data-testid="stSidebar"] [data-baseweb="select"] > div,
-.stSelectbox [data-baseweb="select"] > div{
-  background:#172943!important;
-  color:#fff!important;
-  border-color:#6485ad!important;
-}
-[data-testid="stSelectbox"] [data-baseweb="select"] *,
-[data-testid="stSidebar"] [data-baseweb="select"] *,
-.stSelectbox [data-baseweb="select"] *{
-  color:#fff!important;
-  -webkit-text-fill-color:#fff!important;
-}
-[data-baseweb="popover"] [role="listbox"],
-[data-baseweb="popover"] [role="option"],
-[data-baseweb="menu"],
-[data-baseweb="menu"] *{
-  background:#142944!important;
-  color:#fff!important;
-  -webkit-text-fill-color:#fff!important;
-}
-[data-baseweb="popover"] [role="option"]:hover,
-[data-baseweb="popover"] [aria-selected="true"]{
-  background:#28527d!important;
-  color:#fff!important;
-}
-[data-testid="stFileUploader"],
-[data-testid="stFileUploader"] section,
-[data-testid="stFileUploader"] [data-testid="stFileUploaderDropzone"],
-[data-testid="stFileUploader"] [data-testid="stFileUploaderDropzone"] > div{
-  background:#142944!important;
-  color:#fff!important;
-  border-color:#6485ad!important;
-}
-[data-testid="stFileUploader"] *,
-[data-testid="stFileUploader"] button *{
-  color:#fff!important;
-  -webkit-text-fill-color:#fff!important;
-}
-[data-testid="stChatInput"],
-[data-testid="stChatInput"] > div,
-[data-testid="stChatInput"] textarea{
-  background:#172943!important;
-  color:#fff!important;
-  -webkit-text-fill-color:#fff!important;
-}
-[data-testid="stTextInput"] input,
-[data-testid="stTextArea"] textarea,
-[data-testid="stNumberInput"] input{
-  background:#172943!important;
-  color:#fff!important;
-  -webkit-text-fill-color:#fff!important;
-  border-color:#6485ad!important;
-}
-[data-testid="stTextInput"] input::placeholder,
-[data-testid="stTextArea"] textarea::placeholder,
-[data-testid="stChatInput"] textarea::placeholder{
-  color:#c6d5e8!important;
-  -webkit-text-fill-color:#c6d5e8!important;
-  opacity:1!important;
-}
-[data-testid="stWidgetLabel"],
-[data-testid="stWidgetLabel"] *,
-[data-testid="stCaptionContainer"]{
-  color:#d5e2f2!important;
-}
-[data-testid="stRadio"] label,
-[data-testid="stCheckbox"] label{
-  color:#f4f7fc!important;
-}
-on
-import os
-import streamlit as st
-import requests
-import time
-
-st.set_page_config(page_title="StudyGPT Pro", page_icon="🎓", layout="wide")
-
-MODEL = "gemini-3.8-flash"
-ENDPOINT = f"https://generativelanguage.googleapis.com/v1beta/models/{MODEL}:generateContent"
-SUBJECTS = {
-    "اللغة العربية": "معلم لغة عربية ونحو وبلاغة",
-    "اللغة الإنجليزية": "معلم لغة إنجليزية",
-    "الرياضيات": "معلم رياضيات",
-    "الفيزياء": "معلم فيزياء",
-    "الكيمياء": "معلم كيمياء",
-    "الأحياء": "معلم أحياء",
-    "التاريخ": "معلم تاريخ",
-    "الجغرافيا": "معلم جغرافيا",
-    "البرمجة والذكاء الاصطناعي": "معلم برمجة وعلوم حاسب",
-}
+st.session_state.setdefault("theme_mode", "Light")
+theme_mode = st.sidebar.radio("Appearance", ["Light", "Dark"], horizontal=True, key="theme_mode")
+if theme_mode == "Dark":
+    theme = {
+        "bg": "#212121", "sidebar": "#171717", "panel": "#2f2f2f",
+        "text": "#ececec", "muted": "#a3a3a3", "border": "#3f3f3f",
+        "input": "#303030", "hover": "#383838", "scheme": "dark"
+    }
+else:
+    theme = {
+        "bg": "#ffffff", "sidebar": "#f7f7f8", "panel": "#f7f7f8",
+        "text": "#171717", "muted": "#6b7280", "border": "#e5e5e5",
+        "input": "#ffffff", "hover": "#eeeeee", "scheme": "light"
+    }
 
 st.markdown("""
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&display=swap');
-:root{color-scheme:dark}
-html,body,[class*="css"]{font-family:'Cairo',sans-serif;color:#f4f7fc}
-.stApp,[data-testid="stAppViewContainer"]{background:radial-gradient(ellipse at 82% 4%,rgba(36,105,190,.34),transparent 34%),linear-gradient(135deg,#07101e 0%,#0b1729 54%,#102747 100%);color:#f4f7fc}
-[data-testid="stHeader"]{background:rgba(7,16,30,.82)}
-.block-container{max-width:1280px;padding-top:1.7rem;padding-bottom:3rem}
-[data-testid="stSidebar"]{background:linear-gradient(180deg,#101e35 0%,#0a1425 100%);border-right:1px solid #294366}
-[data-testid="stSidebar"] *{color:#f4f7fc}
-[data-testid="stSidebar"] [data-baseweb="select"]>div{background:#172943;border:1px solid #3b567b;color:#fff}
-[data-testid="stSidebar"] [data-baseweb="select"] *{color:#fff!important}
-[data-testid="stMarkdownContainer"],[data-testid="stChatMessageContent"]{direction:rtl;text-align:right;color:#f4f7fc}
-[data-testid="stMarkdownContainer"] p,[data-testid="stMarkdownContainer"] li{line-height:1.9;color:#f4f7fc}
-.hero{padding:30px 34px;border-radius:20px;margin:4px 0 24px;background:linear-gradient(115deg,#102847 0%,#173d69 58%,#087fae 100%);border:1px solid #315b87;box-shadow:0 14px 38px rgba(0,0,0,.24);color:#fff}
-.hero h1,.hero p{color:#fff}
-.hero h1{font-size:clamp(30px,4vw,42px);font-weight:900;margin:5px 0;letter-spacing:-.6px}
-.hero p{font-size:16px;margin-bottom:0}
-.stButton>button,.stDownloadButton>button,[data-testid="stFormSubmitButton"] button{border-radius:11px;background:linear-gradient(105deg,#287cf0,#12a5ce)!important;color:#fff!important;border:1px solid #398edc!important;font-weight:700;min-height:44px;transition:all .18s ease}
-.stButton>button *, .stDownloadButton>button *, [data-testid="stFormSubmitButton"] button *{color:#fff!important;-webkit-text-fill-color:#fff!important}
-.stButton>button:hover,.stDownloadButton>button:hover,[data-testid="stFormSubmitButton"] button:hover{filter:brightness(1.12);border-color:#75c8f5!important}
-[data-testid="stMetric"]{background:linear-gradient(145deg,#142b49,#1b3557);border:1px solid #36577e;padding:15px;border-radius:14px;box-shadow:0 7px 20px rgba(0,0,0,.18)}
-[data-testid="stMetricLabel"],[data-testid="stMetricValue"],[data-testid="stMetric"] *{color:#fff!important}
-[data-testid="stTabs"]{background:transparent}
-[data-testid="stTabs"] button{font-family:'Cairo',sans-serif;font-weight:700;color:#dce8f7!important}
-[data-testid="stTabs"] button[aria-selected="true"]{color:#fff!important;border-bottom-color:#35a9f0}
-[data-testid="stChatMessage"]{background:linear-gradient(145deg,#142944,#1b3554);border:1px solid #36577e;border-radius:15px;padding:14px 18px;margin:10px 0;box-shadow:0 5px 16px rgba(0,0,0,.16)}
-[data-testid="stChatMessage"] *{color:#f4f7fc!important}
-[data-testid="stChatInput"]{background:#172943;border:1px solid #45658d;border-radius:14px;box-shadow:0 7px 22px rgba(0,0,0,.18)}
-[data-testid="stChatInput"] textarea,[data-testid="stChatInput"] textarea:focus{background:#172943!important;color:#fff!important;-webkit-text-fill-color:#fff!important;caret-color:#fff!important;opacity:1!important}
-[data-testid="stChatInput"] textarea::placeholder{color:#b9c9df!important;-webkit-text-fill-color:#b9c9df!important;opacity:1!important}
-[data-testid="stChatInput"] button{color:#fff!important}
-.stTextInput input,.stTextArea textarea{background:#172943!important;color:#fff!important;-webkit-text-fill-color:#fff!important;border-color:#45658d!important;border-radius:10px!important}
-.stTextInput input::placeholder,.stTextArea textarea::placeholder{color:#b9c9df!important;-webkit-text-fill-color:#b9c9df!important}
-.stSelectbox [data-baseweb="select"]>div{background:#172943;color:#fff;border:1px solid #45658d;border-radius:10px}
-.stSelectbox [data-baseweb="select"] *{color:#fff!important}
-.stRadio label,.stCheckbox label{color:#f4f7fc!important}
-[data-testid="stFileUploader"]{background:#142944;border:1px dashed #52749c;border-radius:12px;padding:10px}
-[data-testid="stFileUploader"] *{color:#f4f7fc!important}
-[data-testid="stDataFrame"],[data-testid="stTable"]{background:#142944}
-[data-testid="stAlert"]{border-radius:12px}
-hr{border-color:#294362}
-/* Strong contrast fixes for Streamlit/BaseWeb widgets */
-[data-testid="stSidebar"] label,
-[data-testid="stSidebar"] [data-testid="stWidgetLabel"],
-[data-testid="stSidebar"] [data-testid="stWidgetLabel"] p{color:#f4f7fc!important}
-[data-testid="stSidebar"] [data-baseweb="select"],
-[data-testid="stSidebar"] [data-baseweb="select"]>div,
-[data-testid="stSidebar"] [data-baseweb="select"] input,
-[data-testid="stSidebar"] [data-baseweb="select"] [role="combobox"]{
-  background:#172943!important;color:#fff!important;-webkit-text-fill-color:#fff!important;
-  border-color:#52749c!important
+:root { color-scheme: __SCHEME__; }
+html, body, [class*="css"] { color: __TEXT__; }
+.stApp, [data-testid="stAppViewContainer"] { background: __BG__; color: __TEXT__; }
+[data-testid="stHeader"] { background: __BG__; }
+.block-container { max-width: 1040px; padding-top: 1.4rem; padding-bottom: 4rem; }
+[data-testid="stSidebar"] { background: __SIDEBAR__; border-right: 1px solid __BORDER__; }
+[data-testid="stSidebar"] * { color: __TEXT__; }
+[data-testid="stMarkdownContainer"], [data-testid="stChatMessageContent"] {
+  color: __TEXT__; unicode-bidi: plaintext; text-align: start;
 }
-[data-testid="stSidebar"] [data-baseweb="select"] span,
-[data-testid="stSidebar"] [data-baseweb="select"] div,
-[data-testid="stSidebar"] [data-baseweb="select"] svg{color:#fff!important;fill:#fff!important}
-[data-baseweb="popover"],[data-baseweb="menu"],[role="listbox"]{
-  background:#142944!important;color:#fff!important;border:1px solid #52749c!important
+[data-testid="stMarkdownContainer"] p, [data-testid="stMarkdownContainer"] li {
+  color: __TEXT__; line-height: 1.75;
 }
-[role="option],[role="listbox"] *,[data-baseweb="menu"] *{
-  background-color:#142944!important;color:#fff!important
+.app-topbar {
+  display:flex; align-items:center; justify-content:space-between;
+  padding: 8px 2px 18px; border-bottom:1px solid __BORDER__;
+  margin-bottom:24px; color:__TEXT__; font-size:14px;
 }
-[role="option"]:hover,[aria-selected="true"]{background:#24517d!important;color:#fff!important}
-[data-testid="stFileUploader"],[data-testid="stFileUploader"] section,
-[data-testid="stFileUploaderDropzone"]{
-  background:#142944!important;color:#f4f7fc!important;border:1px dashed #6485ad!important
+.app-topbar strong { font-size:19px; letter-spacing:-.5px; }
+.app-topbar span:last-child { color:__MUTED__; }
+.stButton > button, .stDownloadButton > button,
+[data-testid="stFormSubmitButton"] button {
+  border-radius: 12px; min-height: 42px; border:1px solid __BORDER__ !important;
+  background: __PANEL__ !important; color: __TEXT__ !important;
+  font-weight:600; transition: background .15s ease, border-color .15s ease;
 }
-[data-testid="stFileUploader"] *,
-[data-testid="stFileUploaderDropzone"] *{
-  color:#f4f7fc!important;-webkit-text-fill-color:#f4f7fc!important
+.stButton > button:hover, .stDownloadButton > button:hover,
+[data-testid="stFormSubmitButton"] button:hover {
+  background: __HOVER__ !important; border-color: __MUTED__ !important;
 }
-[data-testid="stFileUploader"] button{
-  background:#203d60!important;color:#fff!important;border:1px solid #6485ad!important
+.stButton > button *, .stDownloadButton > button *,
+[data-testid="stFormSubmitButton"] button * {
+  color: __TEXT__ !important; -webkit-text-fill-color: __TEXT__ !important;
 }
-[data-testid="stFileUploader"] button *{color:#fff!important;-webkit-text-fill-color:#fff!important}
-[data-testid="stChatInput"],[data-testid="stChatInput"]>div,
-[data-testid="stChatInput"] textarea{
-  background:#172943!important;color:#fff!important;-webkit-text-fill-color:#fff!important
+[data-testid="stChatMessage"] {
+  background: transparent; border:0; border-radius:14px;
+  padding: 12px 14px; margin: 8px 0;
 }
-[data-testid="stChatInput"] textarea::placeholder{
-  color:#c6d5e8!important;-webkit-text-fill-color:#c6d5e8!important;opacity:1!important
+[data-testid="stChatInput"] {
+  background: __INPUT__; border:1px solid __BORDER__;
+  border-radius:18px; box-shadow:0 4px 18px rgba(0,0,0,.06);
 }
-[data-testid="stTextInput"] input,[data-testid="stTextArea"] textarea,
-[data-testid="stNumberInput"] input{
-  background:#172943!important;color:#fff!important;-webkit-text-fill-color:#fff!important;
-  border:1px solid #52749c!important
+[data-testid="stChatInput"] textarea,
+[data-testid="stChatInput"] textarea:focus {
+  background: __INPUT__ !important; color: __TEXT__ !important;
+  -webkit-text-fill-color: __TEXT__ !important; caret-color: __TEXT__ !important;
 }
-[data-testid="stTextInput"] input::placeholder,
-[data-testid="stTextArea"] textarea::placeholder{
-  color:#c6d5e8!important;-webkit-text-fill-color:#c6d5e8!important;opacity:1!important
+[data-testid="stChatInput"] textarea::placeholder {
+  color: __MUTED__ !important; -webkit-text-fill-color: __MUTED__ !important;
 }
-[data-testid="stRadio"] label,[data-testid="stCheckbox"] label,
-[data-testid="stSlider"] label{color:#f4f7fc!important}
-[data-testid="stRadio"] [data-testid="stMarkdownContainer"] p{color:#f4f7fc!important}
-[data-testid="stForm"]{background:rgba(20,41,68,.55);border:1px solid #36577e;border-radius:14px;padding:16px}
-[data-testid="stCaptionContainer"],small{color:#c1cfe1!important}
-
-@media(max-width:700px){.block-container{padding:1rem 1rem 2rem}.hero{padding:22px}.hero h1{font-size:30px}}
-
-/* User-requested fix: BLACK text on the existing LIGHT controls */
-[data-testid="stSidebar"] [data-testid="stSelectbox"] [data-baseweb="select"],
-[data-testid="stSidebar"] [data-testid="stSelectbox"] [data-baseweb="select"] > div,
-[data-testid="stSidebar"] [data-testid="stSelectbox"] [data-baseweb="select"] div,
-[data-testid="stSidebar"] [data-testid="stSelectbox"] [data-baseweb="select"] span,
-[data-testid="stSidebar"] [data-testid="stSelectbox"] [data-baseweb="select"] input,
-[data-testid="stSidebar"] .stSelectbox [data-baseweb="select"] *,
-[data-testid="stSelectbox"] [data-baseweb="select"] * {
-  color:#111827!important;
-  -webkit-text-fill-color:#111827!important;
+.stTextInput input, .stTextArea textarea, .stNumberInput input {
+  background: __INPUT__ !important; color: __TEXT__ !important;
+  -webkit-text-fill-color: __TEXT__ !important; border:1px solid __BORDER__ !important;
+  border-radius:10px !important;
 }
-[data-testid="stSidebar"] [data-testid="stSelectbox"] [data-baseweb="select"] svg,
-[data-testid="stSelectbox"] [data-baseweb="select"] svg {
-  fill:#111827!important;color:#111827!important;
+.stTextInput input::placeholder, .stTextArea textarea::placeholder {
+  color: __MUTED__ !important; -webkit-text-fill-color: __MUTED__ !important;
 }
-[data-baseweb="popover"] [role="listbox"],
-[data-baseweb="popover"] [role="option"],
-[data-baseweb="popover"] [role="option"] *,
-[data-baseweb="menu"],[data-baseweb="menu"] * {
-  background:#ffffff!important;
-  color:#111827!important;
-  -webkit-text-fill-color:#111827!important;
+.stSelectbox [data-baseweb="select"] > div,
+[data-testid="stSelectbox"] [data-baseweb="select"] > div {
+  background: __INPUT__ !important; color: __TEXT__ !important;
+  border:1px solid __BORDER__ !important; border-radius:10px;
 }
-[data-testid="stFileUploader"],
-[data-testid="stFileUploader"] *,
-[data-testid="stFileUploaderDropzone"],
-[data-testid="stFileUploaderDropzone"] *,
-[data-testid="stFileUploader"] button,
-[data-testid="stFileUploader"] button * {
-  color:#111827!important;
-  -webkit-text-fill-color:#111827!important;
+.stSelectbox [data-baseweb="select"] *, [data-testid="stSelectbox"] [data-baseweb="select"] * {
+  color: __TEXT__ !important; -webkit-text-fill-color: __TEXT__ !important;
 }
-[data-testid="stFileUploader"] svg,
-[data-testid="stFileUploaderDropzone"] svg {
-  fill:#111827!important;color:#111827!important;
+[data-baseweb="popover"] [role="listbox"], [data-baseweb="popover"] [role="option"],
+[data-baseweb="menu"], [data-baseweb="menu"] * {
+  background: __PANEL__ !important; color: __TEXT__ !important;
+  -webkit-text-fill-color: __TEXT__ !important;
 }
-[data-testid="stChatInput"] button,
-[data-testid="stChatInput"] button *,
-[data-testid="stChatInput"] button svg {
-  color:#111827!important;
-  fill:#111827!important;
-  -webkit-text-fill-color:#111827!important;
+[data-baseweb="popover"] [role="option"]:hover, [aria-selected="true"] {
+  background: __HOVER__ !important;
+}
+[data-testid="stMetric"] {
+  background: __PANEL__; border:1px solid __BORDER__;
+  padding:14px; border-radius:14px;
+}
+[data-testid="stMetric"] * { color:__TEXT__ !important; }
+[data-testid="stTabs"] button { color:__TEXT__ !important; }
+[data-testid="stFileUploader"] {
+  background:__PANEL__; border:1px dashed __BORDER__; border-radius:12px; padding:10px;
+}
+[data-testid="stFileUploader"] * { color:__TEXT__ !important; }
+[data-testid="stForm"] {
+  background:__PANEL__; border:1px solid __BORDER__; border-radius:14px; padding:16px;
+}
+[data-testid="stCaptionContainer"], small { color:__MUTED__ !important; }
+[data-testid="stAlert"] { border-radius:12px; }
+hr { border-color:__BORDER__; }
+@media(max-width:700px) {
+  .block-container { padding:1rem .8rem 2rem; }
+  .app-topbar { margin-bottom:16px; }
 }
 </style>
-''', unsafe_allow_html=True)
+""".replace("__SCHEME__", theme["scheme"])
+  .replace("__TEXT__", theme["text"])
+  .replace("__BG__", theme["bg"])
+  .replace("__SIDEBAR__", theme["sidebar"])
+  .replace("__PANEL__", theme["panel"])
+  .replace("__MUTED__", theme["muted"])
+  .replace("__BORDER__", theme["border"])
+  .replace("__INPUT__", theme["input"])
+  .replace("__HOVER__", theme["hover"]), unsafe_allow_html=True)
 
 def api_key():
     try:
@@ -504,33 +338,33 @@ def init_state():
 
 init_state()
 
-if get_user_email() and not st.session_state.get("_cloud_loaded", False):
+for subject_name in SUBJECTS:\n    st.session_state.activity.setdefault(subject_name, 0)\n\nif get_user_email() and not st.session_state.get("_cloud_loaded", False):
     restore_cloud_progress()
     st.session_state["_cloud_loaded"] = True
 
 with st.sidebar:
-    st.markdown("## 🎓 StudyGPT Pro")
-    st.caption("المساعد التعليمي الذكي لطلاب مصر")
+    st.markdown("## StudyGPT Pro")
+    st.caption("Your AI learning workspace")
 
     signed_email = get_user_email()
     if signed_email:
-        st.success("تم تسجيل الدخول")
+        st.success("Signed in")
         st.caption(signed_email)
-        if st.button("تسجيل الخروج", use_container_width=True):
+        if st.button("Sign out", use_container_width=True):
             st.logout()
     else:
-        if st.button("تسجيل الدخول بحساب Google", use_container_width=True):
+        if st.button("Continue with Google", use_container_width=True):
             try:
                 st.login()
             except Exception:
-                st.error("إعداد Google OAuth غير مكتمل في Streamlit Secrets.")
+                st.error("Google sign-in is not configured in Streamlit Secrets yet.")
 
     grade = st.selectbox("المرحلة الدراسية", [
         "الصف الأول الإعدادي", "الصف الثاني الإعدادي", "الصف الثالث الإعدادي",
         "الصف الأول الثانوي", "الصف الثاني الثانوي", "الصف الثالث الثانوي",
         "البكالوريا المصرية"
     ])
-    subject = st.selectbox("المادة", list(SUBJECTS))
+    subject = st.selectbox("Subject", list(SUBJECTS))
     language = st.selectbox("لغة الشرح", [
         "العربية المصرية", "العربية الفصحى", "English"
     ])
@@ -539,9 +373,9 @@ with st.sidebar:
     ])
     st.divider()
     left, right = st.columns(2)
-    left.metric("الأسئلة", st.session_state.question_count)
-    right.metric("الامتحانات", len(st.session_state.exam_history))
-    if st.button("محادثة جديدة", use_container_width=True):
+    left.metric("Questions", st.session_state.question_count)
+    right.metric("Exams", len(st.session_state.exam_history))
+    if st.button("New chat", use_container_width=True):
         st.session_state.messages = []
         st.rerun()
     if st.session_state.messages:
@@ -549,9 +383,9 @@ with st.sidebar:
             ("الطالب: " if m["role"] == "user" else "StudyGPT: ") + m["content"]
             for m in st.session_state.messages
         )
-        st.download_button("تحميل المحادثة", transcript, "StudyGPT.txt", use_container_width=True)
+        st.download_button("Export conversation", transcript, "StudyGPT.txt", use_container_width=True)
     st.divider()
-    st.caption("نسخة تجريبية. راجع المعلومات المهمة مع كتابك ومعلمك.")
+    st.caption("AI-generated answers can be wrong. Verify important information with trusted study materials.")
 
 st.markdown("""
 <div class="hero">
@@ -565,29 +399,29 @@ tutor, exams, bank, flashcards, analytics = st.tabs([
     "💬 المعلم الذكي", "📝 محاكي الامتحانات", "📚 بنك أسئلة المنهج", "🧠 البطاقات الذكية", "📊 تحليل الأداء"
 ])
 
-with tutor:
-    st.subheader("اسأل المعلم الذكي")
-    st.caption(f"{grade} • {subject} • {language}")
+if tutor:
+    st.subheader("Ask your AI tutor")
+    st.caption(f"{grade} • {subject} • Reply: {language}")
     uploaded_file = st.file_uploader(
-        "اسأل كتابك أو صورة السؤال",
+        "Attach a page or question image",
         type=["pdf", "png", "jpg", "jpeg", "webp"],
         accept_multiple_files=False,
-        help="ارفع صفحة PDF أو صورة واضحة، ثم اكتب سؤالك في مربع المحادثة. الحد الأقصى 15 ميجابايت."
+        help="Upload a PDF page or a clear image, then ask your question. Maximum file size: 15 MB."
     )
     if uploaded_file:
-        st.caption(f"الملف المرفق: {uploaded_file.name}")
+        st.caption(f"Attached: {uploaded_file.name}")
     q1, q2, q3 = st.columns(3)
     quick = None
-    if q1.button("اختبر فهمي", use_container_width=True):
+    if q1.button("Test my understanding", use_container_width=True):
         quick = f"اختبر فهمي في {subject} بسؤال واحد، وانتظر إجابتي قبل كشف الحل."
-    if q2.button("لخص الدرس", use_container_width=True):
+    if q2.button("Summarize lesson", use_container_width=True):
         quick = f"لخص أهم موضوعات {subject} لطلاب {grade}."
-    if q3.button("خطة مراجعة", use_container_width=True):
+    if q3.button("7-day revision plan", use_container_width=True):
         quick = f"ضع خطة مراجعة لمدة 7 أيام لمادة {subject}."
     for item in st.session_state.messages:
         with st.chat_message(item["role"]):
             st.markdown(item["content"])
-    typed = st.chat_input(f"اكتب سؤالك في {subject}...")
+    typed = st.chat_input(f"Message your tutor about {subject}...")
     prompt = quick or typed
     if prompt:
         history = list(st.session_state.messages[-4:])
@@ -598,13 +432,13 @@ with tutor:
             st.markdown(prompt)
         instructions = (
             f"أنت {SUBJECTS[subject]} لطلاب {grade}. أسلوب الشرح: {style}. "
-            f"لغة الإجابة المطلوبة: {language}. إذا اختار الطالب العربية المصرية فاستخدم تعبيرات مصرية تعليمية واضحة دون مبالغة. "
+            ("Automatically detect the language of the latest student message and reply in that same language. " if language == "Auto-detect" else f"Reply in {language}. ")
             "أجب بشكل مباشر ومنظم، واستخدم أمثلة عند الحاجة. "
             "إذا أرفق الطالب ملفًا أو صورة فاعتمد على محتواها أولًا، واذكر بوضوح إذا كانت معلومة غير ظاهرة أو غير مقروءة. "
             "لا تخترع معلومات أو تنسب المحتوى لكتاب الوزارة دون تحقق."
         )
         with st.chat_message("assistant"):
-            with st.spinner("StudyGPT يفكر..."):
+            with st.spinner("Thinking..."):
                 try:
                     contents = []
                     for message in history:
@@ -628,16 +462,16 @@ with tutor:
                 except Exception as error:
                     st.error(str(error))
 
-with exams:
-    st.subheader("أنشئ امتحانًا تدريبيًا")
+if exams:
+    st.subheader("Create a practice exam")
     with st.form("exam_setup"):
-        topic = st.text_input("اسم الدرس أو الوحدة", placeholder="مثال: قوانين نيوتن أو النحو")
-        level = st.selectbox("مستوى الصعوبة", ["سهل", "متوسط", "متقدم"])
-        count = st.selectbox("عدد الأسئلة", [5, 10, 15])
-        create = st.form_submit_button("إنشاء الامتحان", use_container_width=True)
+        topic = st.text_input("Lesson or unit", placeholder="مثال: قوانين نيوتن أو النحو")
+        level = st.selectbox("Difficulty", ["Easy", "Intermediate", "Advanced"])
+        count = st.selectbox("Number of questions", [5, 10, 15])
+        create = st.form_submit_button("Generate exam", use_container_width=True)
     if create:
         if not topic.strip():
-            st.warning("اكتب اسم الدرس أولًا.")
+            st.warning("Enter a lesson or unit first.")
         else:
             prompt = (
                 f"أنشئ {count} أسئلة اختيار من متعدد باللغة العربية في {subject} "
@@ -706,22 +540,22 @@ with exams:
                 st.rerun()
 
 
-with bank:
-    st.subheader("بنك أسئلة المنهج")
-    st.caption(f"{grade} • {subject} — أنشئ تدريبًا مرتبطًا بالوحدة والدرس")
-    st.info("الأسئلة هنا تدريبية مولّدة بالذكاء الاصطناعي وليست أسئلة وزارة معتمدة. للحصول على أسئلة مطابقة لمصدر دراستك، ارفع صفحات الدرس أو ملف PDF.")
+if bank:
+    st.subheader("Curriculum question bank")
+    st.caption(f"{grade} • {subject} — Build practice around a unit and lesson")
+    st.info("Questions are AI-generated practice, not official ministry questions. Upload your lesson pages or PDF when you need practice grounded in a specific source.")
     with st.form("curriculum_bank_setup"):
-        unit_name = st.text_input("الوحدة", placeholder="مثال: الوحدة الأولى")
-        lesson_name = st.text_input("الدرس", placeholder="اكتب اسم الدرس")
-        bank_level = st.selectbox("مستوى الأسئلة", ["سهل", "متوسط", "متقدم"])
-        bank_count = st.selectbox("عدد الأسئلة", [5, 10, 15])
+        unit_name = st.text_input("Unit", placeholder="مثال: الوحدة الأولى")
+        lesson_name = st.text_input("Lesson", placeholder="اكتب اسم الدرس")
+        bank_level = st.selectbox("Question difficulty", ["Easy", "Intermediate", "Advanced"])
+        bank_count = st.selectbox("Number of questions", [5, 10, 15])
         source_file = st.file_uploader(
-            "ارفع صفحات الدرس أو ملف الكتاب (اختياري)",
+            "Upload lesson pages or textbook (optional)",
             type=["pdf", "png", "jpg", "jpeg", "webp"],
             accept_multiple_files=False,
             key="bank_source_file",
         )
-        build_bank = st.form_submit_button("إنشاء أسئلة الدرس", use_container_width=True)
+        build_bank = st.form_submit_button("Generate lesson questions", use_container_width=True)
     if build_bank:
         if not unit_name.strip() or not lesson_name.strip():
             st.warning("اكتب اسم الوحدة والدرس أولًا.")
@@ -817,12 +651,12 @@ with bank:
             st.rerun()
 
 
-with flashcards:
-    st.subheader("البطاقات الذكية")
+if flashcards:
+    st.subheader("Flashcards")
     with st.form("cards_setup"):
-        card_topic = st.text_input("موضوع البطاقات", placeholder="مصطلحات البرمجة أو مفاهيم التاريخ...")
-        card_count = st.selectbox("عدد البطاقات", [5, 8, 10])
-        make_cards = st.form_submit_button("إنشاء البطاقات", use_container_width=True)
+        card_topic = st.text_input("Flashcard topic", placeholder="مصطلحات البرمجة أو مفاهيم التاريخ...")
+        card_count = st.selectbox("Number of cards", [5, 8, 10])
+        make_cards = st.form_submit_button("Generate flashcards", use_container_width=True)
     if make_cards:
         if not card_topic.strip():
             st.warning("اكتب موضوع البطاقات.")
@@ -868,8 +702,8 @@ with flashcards:
             st.session_state.card_flipped = False
             st.rerun()
 
-with analytics:
-    st.subheader("تحليل الأداء")
+if analytics:
+    st.subheader("Learning progress")
     history = st.session_state.exam_history
     average = round(sum(x["score"] for x in history) / len(history)) if history else 0
     best = max((x["score"] for x in history), default=0)
@@ -878,9 +712,9 @@ with analytics:
     b.metric("الامتحانات", len(history))
     c.metric("متوسط الدرجات", f"{average}%")
     st.divider()
-    st.markdown("#### نشاط المذاكرة حسب المادة")
+    st.markdown("#### Study activity by subject")
     st.bar_chart(st.session_state.activity)
-    st.markdown("#### سجل الامتحانات")
+    st.markdown("#### Exam history")
     if history:
         st.dataframe(
             [{"المادة": x["subject"], "الموضوع": x["topic"],
@@ -889,14 +723,14 @@ with analytics:
         )
         st.metric("أعلى نتيجة", f"{best}%")
     else:
-        st.info("ستظهر نتائجك هنا بعد حل أول امتحان.")
+        st.info("Your results will appear here after your first exam.")
 
 st.divider()
 if get_user_email():
     if persist_cloud_progress():
-        st.caption("تم حفظ تقدمك على حسابك.")
+        st.caption("Your progress has been saved to your account.")
     else:
-        st.warning("الحفظ السحابي غير جاهز. راجع إعدادات Supabase.")
+        st.warning("Cloud saving is not configured. Check the Supabase settings.")
 else:
-    st.caption("سجّل الدخول بحساب Google لتفعيل حفظ تقدمك بعد إعداد الخدمة.")
-st.caption("StudyGPT Pro • منصة تعليمية تجريبية • Gemini AI")
+    st.caption("Sign in with Google to enable cloud progress after setup.")
+st.caption("StudyGPT Pro • AI-powered learning workspace")
